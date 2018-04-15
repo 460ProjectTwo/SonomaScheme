@@ -45,35 +45,7 @@ SyntacticalAnalyzer::~SyntacticalAnalyzer()
 	p2file.close();
 }
 
-/*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
-int SyntacticalAnalyzer::Program()
-{
-	p2file << "Entering Program function; current token is: "
-					<< lex->GetTokenName(token) << endl;
-	int errors = 0;
-	// token should be in firsts of Program
-	// Body of function goes here.
-	p2file << "Using Rule 1" << endl;
-	//errors += Define();
-	//errors += More_Defines();
-	if (token != EOF_T)
-	{
-		errors++;
-		lex->ReportError("Missing end of file at end of program");
-	}
-	// token should be in follows of Program
-	p2file << "Exiting Program function; current token is: "
-					<< lex->GetTokenName(token) << endl;
-	return errors;
-}
-
-typedef unsigned rule;
+typedef char rule;
 enum { NoRule = 0 };
 
 enum non_terminal {
@@ -85,6 +57,44 @@ enum non_terminal {
 static rule const rules[][MAX_TOKENS] = {
     // Rows are non-terminals, columns are tokens
 };
+
+/*******************************************************************************
+ * Function:                                                                    *
+ *                                                                              *
+ * Parameters:                                                                  *
+ * Return value:                                                                *
+ * Description: This function will                                              *
+ *******************************************************************************/
+int SyntacticalAnalyzer::Program()
+{
+    p2file << "Entering Program function; current token is: "
+           << lex->GetTokenName(token) << endl;
+    int errors = 0;
+
+    // token should be in firsts of Program
+    rule r = rules[ntProgram][token];
+
+    if (r != NoRule) {
+        p2file << "Using Rule " << r << endl;
+        errors += Define();
+        errors += MoreDefines();
+        if (token != EOF_T) {
+            lex->ReportError("Missing end of file at end of program");
+            ++errors;
+        }
+    }
+    else {
+        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
+                         "expected a program"); // TODO: expected what?
+        ++errors;
+    }
+
+    // token should be in follows of Program
+    p2file << "Exiting Program function; current token is: "
+           << lex->GetTokenName(token) << endl;
+
+    return errors;
+}
 
 /*******************************************************************************
  * Function:                                                                    *
