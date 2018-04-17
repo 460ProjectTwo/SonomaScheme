@@ -1,8 +1,14 @@
 NoRule = 0
+
+#
+# Firsts
+#
+
 def check_firsts_define( ttype ):
     if ttype == 'LPAREN_T':
         return 2
     return NoRule
+
 
 def check_firsts_program( ttype ):
     if check_firsts_define( ttype ):
@@ -11,19 +17,14 @@ def check_firsts_program( ttype ):
 
 
 def check_firsts_more_defines( ttype ):
-
     if check_firsts_define(ttype):
         return 3
-
     if check_follows_more_defines(ttype):
         return 4
-
     return NoRule
 
 
-
 def check_firsts_stmt( ttype ):
-
     if check_firsts_literal(ttype):
         return 7
     if ttype == 'IDENT_T':
@@ -33,14 +34,13 @@ def check_firsts_stmt( ttype ):
     return NoRule
 
 
-
-
 def check_firsts_stmt_list( ttype ):
     if check_firsts_stmt(ttype):
         return 5;
     if check_follows_stmt_list(ttype):
         return 6;
     return NoRule;
+
 
 def check_firsts_literal( ttype ):
     if ttype == 'NUMLIT_T':
@@ -50,10 +50,13 @@ def check_firsts_literal( ttype ):
     if ttype == 'QUOTE_T':
         return 12
     return NoRule
+
+
 def check_firsts_quoted_lit( ttype ):
     if check_firsts_aot( ttype ):
         return 13
     return NoRule
+
 
 def check_firsts_more_tokens( ttype ):
     if check_firsts_aot( ttype ):
@@ -62,12 +65,14 @@ def check_firsts_more_tokens( ttype ):
         return 15
     return NoRule
 
+
 def check_firsts_param_list( ttype ):
     if ttype == 'IDENT_T':
         return 16
     if check_follows_param_list( ttype ):
         return 17
     return NoRule
+
 
 def check_firsts_else_part( ttype ):
     if check_firsts_stmt( ttype ):
@@ -76,6 +81,7 @@ def check_firsts_else_part( ttype ):
         return 19
     return NoRule
 
+
 def check_firsts_stmt_pair( ttype ):
     if ttype == 'LPAREN_T':
         return 20
@@ -83,12 +89,14 @@ def check_firsts_stmt_pair( ttype ):
         return 21
     return NoRule
 
+
 def check_firsts_stmt_pair_body( ttype ):
     if check_firsts_stmt( ttype ):
         return 22
     if ttype == 'ELSE_T':
         return 23
     return NoRule
+
 
 def check_firsts_action( ttype ):
     getrule = { 'IF_T':24, 'COND_T':25, 'LISTOP_T':26,
@@ -103,6 +111,7 @@ def check_firsts_action( ttype ):
     if ttype in getrule:
         return getrule[ttype]
     return NoRule
+
 
 def check_firsts_aot( ttype ):
     getrule = { 'LPAREN_T':50, 'IDENT_T':51, 'NUMLIT_T':52,
@@ -120,84 +129,85 @@ def check_firsts_aot( ttype ):
         return getrule[ttype]
     return NoRule
 
+#
+# Follows
+#
 
 def check_follows_define( ttype ):
-    if check_firsts_more_defines( ttype ):
-        return True
-    return False
+    return check_firsts_more_defines( ttype ) != NoRule
+
 
 def check_follows_more_defines( ttype ):
-    if ttype == 'EOF_T':
-        return True
-    return False
+    return ttype == 'EOF_T'
+
 
 def check_follows_stmt_list( ttype ):
-    if ttype == 'RPAREN_T':
-        return True
-    if check_follows_action( ttype ):
-        return True
-    return False
+    return ttype == 'RPAREN_T' or check_follows_action( ttype )
+
 
 def check_follows_stmt( ttype ):
     if check_firsts_stmt_list( ttype ):
         return True
-    if check_follows_else_part( ttype ):
-        return True
-    return False
+    return check_follows_else_part( ttype )
+
 
 def check_follows_literal( ttype ):
-    if check_follows_stmt( ttype ):
-        return True
-    return False
+    return check_follows_stmt( ttype )
+
 
 def check_follows_action( ttype):
-    if ttype == 'RPAREN_T':
-        return True
-    return False
+    return ttype == 'RPAREN_T'
+
 
 def check_follows_quoted_lit( ttype ):
     return check_follows_literal( ttype )
 
+
 def check_follows_more_token( ttype ):
-    if ttype == 'RPAREN_T':
-        return True
-    return False
+    return ttype == 'RPAREN_T'
+
+
 #TODO double check follows here
 def check_follows_param_list( ttype ):
-    if ttype == 'RPAREN_T':
-        return True
+    return ttype == 'RPAREN_T'
+
 
 def check_follows_else_part( ttype ):
     return check_follows_action( ttype )
 
+
 def check_follows_stmt_pair( ttype ):
     return check_follows_stmt_pair_body( ttype )
+
+
 #check_follows_stmt_pair( ttype ) or \
 def check_follows_stmt_pair_body( ttype ):
     return check_follows_action( ttype )
 
+
 def check_follows_aot( ttype ):
     if check_firsts_more_tokens( ttype ):
         return True
-    if check_follows_quoted_lit( ttype ):
-        return True
-    return False
+    return check_follows_quoted_lit( ttype )
+
 
 def check_follows_more_tokens( ttype ):
-    if ttype == 'RPAREN_T':
-        return True
-    return False 
+    return ttype == 'RPAREN_T'
+
+#
+# Entry point
+#
 
 def main():
-    TokenType = [  "NONE", "LAMBDA", "IDENT_T", "NUMLIT_T", "STRLIT_T", "CONS_T", "IF_T",
-                 "COND_T", "DISPLAY_T", "NEWLINE_T", "LISTOP_T",
-                 "AND_T", "OR_T", "NOT_T", "DEFINE_T", "NUMBERP_T",
-                 "SYMBOLP_T", "LISTP_T", "ZEROP_T", "NULLP_T",
-                 "STRINGP_T", "MODULO_T", "ELSE_T", "PLUS_T",
-                 "MINUS_T", "DIV_T", "MULT_T", "EQUALTO_T", "GT_T",
-                 "LT_T", "GTE_T", "LTE_T", "LPAREN_T", "RPAREN_T",
-                 "QUOTE_T", "ERROR_T", "EOF_T"]
-    NTChecks = [ 
+    TokenType = [
+        "NONE", "LAMBDA", "IDENT_T", "NUMLIT_T", "STRLIT_T", "CONS_T", "IF_T",
+        "COND_T", "DISPLAY_T", "NEWLINE_T", "LISTOP_T", "AND_T", "OR_T",
+        "NOT_T", "DEFINE_T", "NUMBERP_T", "SYMBOLP_T", "LISTP_T", "ZEROP_T",
+        "NULLP_T", "STRINGP_T", "MODULO_T", "ELSE_T", "PLUS_T", "MINUS_T",
+        "DIV_T", "MULT_T", "EQUALTO_T", "GT_T", "LT_T", "GTE_T", "LTE_T",
+        "LPAREN_T", "RPAREN_T", "QUOTE_T", "ERROR_T", "EOF_T"
+    ]
+    NTChecks = [
         check_firsts_program, check_firsts_define, check_firsts_more_defines,
         check_firsts_stmt_list, check_firsts_stmt, check_firsts_literal, 
         check_firsts_quoted_lit, check_firsts_more_tokens, check_firsts_param_list,
@@ -206,6 +216,7 @@ def main():
     ]
 
     first_rules = [ [ check(t) for t in TokenType ] for check in NTChecks ]
+
     print( first_rules )
 
 
