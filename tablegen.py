@@ -216,9 +216,12 @@ def main():
     ]
 
     first_rules = [ [ check(t) for t in TokenType ] for check in NTChecks ]
-
-    print( first_rules )
-
+    first_string = str(first_rules)\
+        .replace('[[','{\n\t{').replace('[','{').replace('], ','},\n\t')\
+        .replace(']]','}\n};')
+    print('#include "LexicalAnalyzer.h"')
+    print('typedef char rule;')
+    print('static rule const rules[ ][ MAX_TOKENS + 2 ] = '+ first_string)
 
 if __name__ == "__main__":
     main()

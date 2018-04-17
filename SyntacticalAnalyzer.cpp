@@ -10,7 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-
+#include "syntaxrules.hpp"
 #include "SyntacticalAnalyzer.h"
 
 using namespace std;
@@ -45,7 +45,7 @@ SyntacticalAnalyzer::~SyntacticalAnalyzer()
 	p2file.close();
 }
 
-typedef char rule;
+
 enum { NoRule = 0 };
 
 enum non_terminal {
@@ -54,9 +54,6 @@ enum non_terminal {
     ntStmtPairBody, ntAction, ntAnyOtherToken
 };
 
-static rule const rules[][MAX_TOKENS] = {
-    // Rows are non-terminals, columns are tokens
-};
 
 /*******************************************************************************
  * Function:                                                                    *

@@ -10,8 +10,11 @@ SetLimits.o : SetLimits.cpp SetLimits.h
 LexicalAnalyzer.o : LexicalAnalyzer.cpp LexicalAnalyzer.h
 	g++ -g -c -std=c++11 LexicalAnalyzer.cpp
 
-SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h
+SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h syntaxrules.hpp
 	g++ -g -c -std=c++11 SyntacticalAnalyzer.cpp
+
+syntaxrules.hpp : tablegen.py
+	python3 tablegen.py > syntaxrules.hpp
 
 clean :
 	rm -rf *.o P2.out *.gch
