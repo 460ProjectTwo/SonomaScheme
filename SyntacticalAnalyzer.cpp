@@ -56,12 +56,12 @@ enum non_terminal {
 
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::Program()
 {
     p2file << "Entering Program function; current token is: "
@@ -94,12 +94,12 @@ int SyntacticalAnalyzer::Program()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::Define()
 {
     int errors = 0;
@@ -170,12 +170,12 @@ int SyntacticalAnalyzer::Define()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::MoreDefines()
 {
     int errors = 0;
@@ -204,12 +204,12 @@ int SyntacticalAnalyzer::MoreDefines()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::StmtList()
 {
     int errors = 0;
@@ -237,12 +237,12 @@ int SyntacticalAnalyzer::StmtList()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::Stmt()
 {
     int errors = 0;
@@ -284,12 +284,12 @@ int SyntacticalAnalyzer::Stmt()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::Literal()
 {
     int errors = 0;
@@ -320,12 +320,12 @@ int SyntacticalAnalyzer::Literal()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::QuotedLit()
 {
     int errors = 0;
@@ -346,12 +346,12 @@ int SyntacticalAnalyzer::QuotedLit()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::MoreTokens()
 {
     int errors = 0;
@@ -380,12 +380,12 @@ int SyntacticalAnalyzer::MoreTokens()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::ParamList()
 {
     int errors = 0;
@@ -414,12 +414,12 @@ int SyntacticalAnalyzer::ParamList()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::ElsePart()
 {
     int errors = 0;
@@ -447,12 +447,12 @@ int SyntacticalAnalyzer::ElsePart()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::StmtPair()
 {
     int errors = 0;
@@ -481,12 +481,12 @@ int SyntacticalAnalyzer::StmtPair()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::StmtPairBody()
 {
     int errors = 0;
@@ -534,12 +534,12 @@ int SyntacticalAnalyzer::StmtPairBody()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::Action()
 {
     int errors = 0;
@@ -625,12 +625,12 @@ int SyntacticalAnalyzer::Action()
 }
 
 /*******************************************************************************
- * Function:                                                                    *
- *                                                                              *
- * Parameters:                                                                  *
- * Return value:                                                                *
- * Description: This function will                                              *
- *******************************************************************************/
+* Function:                                                                    *
+*                                                                              *
+* Parameters:                                                                  *
+* Return value:                                                                *
+* Description: This function will                                              *
+*******************************************************************************/
 int SyntacticalAnalyzer::AnyOtherToken()
 {
     int errors = 0;
