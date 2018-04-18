@@ -100,7 +100,7 @@ def check_firsts_stmt_pair_body( ttype ):
 
 def check_firsts_action( ttype ):
     getrule = { 'IF_T':24, 'COND_T':25, 'LISTOP_T':26,
-                'CONST_T':27, 'AND_T':28, 'OR_T':29,
+                'CONS_T':27, 'AND_T':28, 'OR_T':29,
                 'NOT_T':30, 'NUMBERP_T':31, 'SYMBOLP_T':32,
                 'LISTP_T':33, 'ZEROP_T':34, 'NULLP_T':35,
                 'STRINGOP_T':36, 'PLUS_T':37, 'MINUS_T':38,
