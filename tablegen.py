@@ -4,16 +4,16 @@ NoRule = 0
 # Firsts
 #
 
+def check_firsts_program( ttype ):
+    if check_firsts_define( ttype ):
+        return 1
+    return NoRule
+
+
 def check_firsts_define( ttype ):
     if ttype == 'LPAREN_T':
         return 2
     return NoRule
-
-
-def check_firsts_program( ttype ):
-    if check_firsts_define( ttype ):
-        return NoRule
-    return 1
 
 
 def check_firsts_more_defines( ttype ):
@@ -200,16 +200,16 @@ def check_follows_more_tokens( ttype ):
 
 def main():
     TokenType = [
-        "NONE", "LAMBDA", "IDENT_T", "NUMLIT_T", "STRLIT_T", "CONS_T", "IF_T",
-        "COND_T", "DISPLAY_T", "NEWLINE_T", "LISTOP_T", "AND_T", "OR_T",
-        "NOT_T", "DEFINE_T", "NUMBERP_T", "SYMBOLP_T", "LISTP_T", "ZEROP_T",
-        "NULLP_T", "STRINGP_T", "MODULO_T", "ELSE_T", "PLUS_T", "MINUS_T",
+        "LAMBDA", "IDENT_T", "NUMLIT_T", "STRLIT_T", "CONS_T", "IF_T", "COND_T",
+        "DISPLAY_T", "NEWLINE_T", "LISTOP_T", "AND_T", "OR_T", "NOT_T",
+        "DEFINE_T", "NUMBERP_T", "SYMBOLP_T", "LISTP_T", "ZEROP_T","NULLP_T",
+        "STRINGP_T", "MODULO_T", "ELSE_T", "PLUS_T", "MINUS_T",
         "DIV_T", "MULT_T", "EQUALTO_T", "GT_T", "LT_T", "GTE_T", "LTE_T",
         "LPAREN_T", "RPAREN_T", "QUOTE_T", "ERROR_T", "EOF_T"
     ]
     NTChecks = [
         check_firsts_program, check_firsts_define, check_firsts_more_defines,
-        check_firsts_stmt_list, check_firsts_stmt, check_firsts_literal, 
+        check_firsts_stmt_list, check_firsts_stmt, check_firsts_literal,
         check_firsts_quoted_lit, check_firsts_more_tokens, check_firsts_param_list,
         check_firsts_else_part, check_firsts_stmt_pair, check_firsts_stmt_pair_body,
         check_firsts_action, check_firsts_aot
@@ -219,9 +219,7 @@ def main():
     first_string = str(first_rules)\
         .replace('[[','{\n\t{').replace('[','{').replace('], ','},\n\t')\
         .replace(']]','}\n};')
-    print('#include "LexicalAnalyzer.h"')
-    print('typedef char rule;')
-    print('static rule const rules[ ][ MAX_TOKENS + 2 ] = '+ first_string)
+    print('static rule const rules[][MAX_TOKENS] =', first_string)
 
 if __name__ == "__main__":
     main()

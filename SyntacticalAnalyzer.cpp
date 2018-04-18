@@ -10,7 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include "syntaxrules.hpp"
+
 #include "SyntacticalAnalyzer.h"
 
 using namespace std;
@@ -24,12 +24,12 @@ using namespace std;
 *******************************************************************************/
 SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
 {
-	lex = new LexicalAnalyzer(filename);
-	string name = filename;
-	string p2name = name.substr(0, name.length()-3) + ".p2";
-	p2file.open (p2name.c_str());
-	token = lex->GetToken();
-	Program();
+    lex = new LexicalAnalyzer(filename);
+    string name = filename;
+    string p2name = name.substr(0, name.length()-3) + ".p2";
+    p2file.open (p2name.c_str());
+    token = lex->GetToken();
+    Program();
 }
 
 /*******************************************************************************
@@ -41,11 +41,12 @@ SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
 *******************************************************************************/
 SyntacticalAnalyzer::~SyntacticalAnalyzer()
 {
-	delete lex;
-	p2file.close();
+    delete lex;
+    p2file.close();
 }
 
 
+typedef char rule;
 enum { NoRule = 0 };
 
 enum non_terminal {
@@ -53,6 +54,16 @@ enum non_terminal {
     ntQuotedLit, ntMoreTokens, ntParamList, ntElsePart, ntStmtPair,
     ntStmtPairBody, ntAction, ntAnyOtherToken
 };
+
+rule checkRule(non_terminal nt, token_type token)
+{
+#include "syntaxrules.hpp"
+
+    if (token <= NONE || token >= MAX_TOKENS)
+        return NoRule;
+
+    return rules[nt][token];
+}
 
 
 /*******************************************************************************
@@ -69,10 +80,11 @@ int SyntacticalAnalyzer::Program()
     int errors = 0;
 
     // token should be in firsts of Program
-    rule r = rules[ntProgram][token];
+
+    rule const r = checkRule(ntProgram, token);
 
     if (r != NoRule) {
-        p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Define();
         errors += MoreDefines();
         if (token != EOF_T) {
@@ -87,6 +99,7 @@ int SyntacticalAnalyzer::Program()
     }
 
     // token should be in follows of Program
+
     p2file << "Exiting Program function; current token is: "
            << lex->GetTokenName(token) << endl;
 
@@ -104,10 +117,10 @@ int SyntacticalAnalyzer::Define()
 {
     int errors = 0;
 
-    rule r = rules[ntDefine][token];
+    rule const r = checkRule(ntDefine, token);
 
     if (r != NoRule) {
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
     }
     else {
@@ -180,16 +193,16 @@ int SyntacticalAnalyzer::MoreDefines()
 {
     int errors = 0;
 
-    rule r = rules[ntMoreDefines][token];
+    rule const r = checkRule(ntMoreDefines, token);
 
     switch (r) {
     case 3:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Define();
         errors += MoreDefines();
         break;
     case 4:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
@@ -214,16 +227,16 @@ int SyntacticalAnalyzer::StmtList()
 {
     int errors = 0;
 
-    rule r = rules[ntStmtList][token];
+    rule const r = checkRule(ntStmtList, token);
 
     switch (r) {
     case 5:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Stmt();
         errors += StmtList();
         break;
     case 6:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("TODO");
@@ -247,19 +260,19 @@ int SyntacticalAnalyzer::Stmt()
 {
     int errors = 0;
 
-    rule r = rules[ntStmt][token];
+    rule const r = checkRule(ntStmt, token);
 
     switch (r) {
     case 7:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Literal();
         break;
     case 8:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         break;
     case 9:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Action();
         if (token == RPAREN_T) {
@@ -294,16 +307,16 @@ int SyntacticalAnalyzer::Literal()
 {
     int errors = 0;
 
-    rule r = rules[ntLiteral][token];
+    rule const r = checkRule(ntLiteral, token);
 
     switch (r) {
     case 10:
     case 11:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         break;
     case 12:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += QuotedLit();
         break;
@@ -330,10 +343,10 @@ int SyntacticalAnalyzer::QuotedLit()
 {
     int errors = 0;
 
-    rule r = rules[ntQuotedLit][token];
+    rule const r = checkRule(ntQuotedLit, token);
 
     if (r != NoRule) {
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += AnyOtherToken();
     }
     else {
@@ -356,16 +369,16 @@ int SyntacticalAnalyzer::MoreTokens()
 {
     int errors = 0;
 
-    rule r = rules[ntMoreTokens][token];
+    rule const r = checkRule(ntMoreTokens, token);
 
     switch (r) {
     case 14:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += AnyOtherToken();
         errors += MoreTokens();
         break;
     case 15:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
@@ -390,16 +403,16 @@ int SyntacticalAnalyzer::ParamList()
 {
     int errors = 0;
 
-    rule r = rules[ntParamList][token];
+    rule const r = checkRule(ntParamList, token);
 
     switch (r) {
     case 16:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += ParamList();
         break;
     case 17:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
@@ -424,15 +437,15 @@ int SyntacticalAnalyzer::ElsePart()
 {
     int errors = 0;
 
-    rule r = rules[ntElsePart][token];
+    rule const r = checkRule(ntElsePart, token);
 
     switch (r) {
     case 18:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Stmt();
         break;
     case 19:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
@@ -457,16 +470,16 @@ int SyntacticalAnalyzer::StmtPair()
 {
     int errors = 0;
 
-    rule r = rules[ntStmtPair][token];
+    rule const r = checkRule(ntStmtPair, token);
 
     switch (r) {
     case 20:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += StmtPairBody();
         break;
     case 21:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         break;
     case NoRule:
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
@@ -491,11 +504,11 @@ int SyntacticalAnalyzer::StmtPairBody()
 {
     int errors = 0;
 
-    rule r = rules[ntStmtPairBody][token];
+    rule const r = checkRule(ntStmtPairBody, token);
 
     switch (r) {
     case 22:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         errors += Stmt();
         errors += Stmt();
         if (token == RPAREN_T) {
@@ -509,7 +522,7 @@ int SyntacticalAnalyzer::StmtPairBody()
         errors += StmtPair();
         break;
     case 23:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Stmt();
         if (token == RPAREN_T) {
@@ -544,18 +557,18 @@ int SyntacticalAnalyzer::Action()
 {
     int errors = 0;
 
-    rule r = rules[ntAction][token];
+    rule const r = checkRule(ntAction, token);
 
     switch (r) {
     case 24:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Stmt();
         errors += Stmt();
         errors += ElsePart();
         break;
     case 25:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         if (token == LPAREN_T) {
             token = lex->GetToken();
@@ -576,13 +589,13 @@ int SyntacticalAnalyzer::Action()
     case 35:
     case 36:
     case 48:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Stmt();
         break;
     case 27:
     case 41:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Stmt();
         errors += Stmt();
@@ -597,19 +610,19 @@ int SyntacticalAnalyzer::Action()
     case 45:
     case 46:
     case 47:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += StmtList();
         break;
     case 38:
     case 39:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += Stmt();
         errors += StmtList();
         break;
     case 49:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         break;
     case NoRule:
@@ -635,11 +648,11 @@ int SyntacticalAnalyzer::AnyOtherToken()
 {
     int errors = 0;
 
-    rule r = rules[ntAnyOtherToken][token];
+    rule const r = checkRule(ntAnyOtherToken, token);
 
     switch (r) {
     case 50:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += MoreTokens();
         if (token == RPAREN_T) {
@@ -681,11 +694,11 @@ int SyntacticalAnalyzer::AnyOtherToken()
     case 78:
     case 80:
     case 81:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         break;
     case 79:
-	p2file << "Using Rule " << r << endl;
+        p2file << "Using Rule " << static_cast<int>(r) << endl;
         token = lex->GetToken();
         errors += AnyOtherToken();
         break;
