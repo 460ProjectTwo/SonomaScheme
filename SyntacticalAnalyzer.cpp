@@ -66,6 +66,12 @@ rule checkRule(non_terminal nt, token_type token)
 }
 
 
+#define USING_RULE(rule) \
+    do { p2file << "Using rule " << static_cast<int>(rule) << endl; } while (0)
+#define REPORT_MISSING(expected) \
+    do { lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; " \
+                          "expected " + (expected)); } while (0)
+
 /*******************************************************************************
 * Function:                                                                    *
 *                                                                              *
@@ -84,7 +90,7 @@ int SyntacticalAnalyzer::Program()
     rule const r = checkRule(ntProgram, token);
 
     if (r != NoRule) {
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Define();
         errors += MoreDefines();
         if (token != EOF_T) {
@@ -93,8 +99,7 @@ int SyntacticalAnalyzer::Program()
         }
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected a program"); // TODO: expected what?
+        REPORT_MISSING("a program"); // TODO: expected what?
         ++errors;
     }
 
@@ -120,12 +125,11 @@ int SyntacticalAnalyzer::Define()
     rule const r = checkRule(ntDefine, token);
 
     if (r != NoRule) {
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected '('");
+        REPORT_MISSING("'('");
         ++errors;
     }
 
@@ -133,8 +137,7 @@ int SyntacticalAnalyzer::Define()
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected 'define'");
+        REPORT_MISSING("'define'");
         ++errors;
     }
 
@@ -142,8 +145,7 @@ int SyntacticalAnalyzer::Define()
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected '('");
+        REPORT_MISSING("'('");
         ++errors;
     }
 
@@ -151,8 +153,7 @@ int SyntacticalAnalyzer::Define()
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected an identifier");
+        REPORT_MISSING("an identifier");
         ++errors;
     }
 
@@ -162,8 +163,7 @@ int SyntacticalAnalyzer::Define()
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected ')'");
+        REPORT_MISSING("')'");
         ++errors;
     }
 
@@ -174,8 +174,7 @@ int SyntacticalAnalyzer::Define()
         token = lex->GetToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected ')'");
+        REPORT_MISSING("')'");
         ++errors;
     }
 
@@ -197,16 +196,15 @@ int SyntacticalAnalyzer::MoreDefines()
 
     switch (r) {
     case 3:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Define();
         errors += MoreDefines();
         break;
     case 4:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -231,15 +229,15 @@ int SyntacticalAnalyzer::StmtList()
 
     switch (r) {
     case 5:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Stmt();
         errors += StmtList();
         break;
     case 6:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("TODO");
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -264,29 +262,27 @@ int SyntacticalAnalyzer::Stmt()
 
     switch (r) {
     case 7:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Literal();
         break;
     case 8:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         break;
     case 9:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Action();
         if (token == RPAREN_T) {
             token = lex->GetToken();
         }
         else {
-            lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                             "expected ')'");
+            REPORT_MISSING("')'");
             ++errors;
         }
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected ')'");
+        REPORT_MISSING("'('");
         ++errors;
         break;
     default:
@@ -312,17 +308,16 @@ int SyntacticalAnalyzer::Literal()
     switch (r) {
     case 10:
     case 11:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         break;
     case 12:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += QuotedLit();
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -346,12 +341,11 @@ int SyntacticalAnalyzer::QuotedLit()
     rule const r = checkRule(ntQuotedLit, token);
 
     if (r != NoRule) {
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += AnyOtherToken();
     }
     else {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
     }
 
@@ -373,16 +367,15 @@ int SyntacticalAnalyzer::MoreTokens()
 
     switch (r) {
     case 14:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += AnyOtherToken();
         errors += MoreTokens();
         break;
     case 15:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -407,16 +400,15 @@ int SyntacticalAnalyzer::ParamList()
 
     switch (r) {
     case 16:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += ParamList();
         break;
     case 17:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected an identifier or ')'"); // TODO: verify expected
+        REPORT_MISSING("an identifier or ')'"); // TODO: verify expected
         ++errors;
         break;
     default:
@@ -441,15 +433,14 @@ int SyntacticalAnalyzer::ElsePart()
 
     switch (r) {
     case 18:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Stmt();
         break;
     case 19:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -474,16 +465,15 @@ int SyntacticalAnalyzer::StmtPair()
 
     switch (r) {
     case 20:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += StmtPairBody();
         break;
     case 21:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -508,35 +498,32 @@ int SyntacticalAnalyzer::StmtPairBody()
 
     switch (r) {
     case 22:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         errors += Stmt();
         errors += Stmt();
         if (token == RPAREN_T) {
             token = lex->GetToken();
         }
         else {
-            lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                             "expected ')'");
+            REPORT_MISSING("')'");
             ++errors;
         }
         errors += StmtPair();
         break;
     case 23:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
         if (token == RPAREN_T) {
             token = lex->GetToken();
         }
         else {
-            lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                             "expected ')'");
+            REPORT_MISSING("')'");
             ++errors;
         }
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else'"); // TODO: expected what?
+        REPORT_MISSING("something else'"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -561,21 +548,20 @@ int SyntacticalAnalyzer::Action()
 
     switch (r) {
     case 24:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
         errors += Stmt();
         errors += ElsePart();
         break;
     case 25:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         if (token == LPAREN_T) {
             token = lex->GetToken();
         }
         else {
-            lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                             "expected '('");
+            REPORT_MISSING("'('");
             ++errors;
         }
         errors += StmtPairBody();
@@ -589,13 +575,13 @@ int SyntacticalAnalyzer::Action()
     case 35:
     case 36:
     case 48:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
         break;
     case 27:
     case 41:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
         errors += Stmt();
@@ -610,24 +596,23 @@ int SyntacticalAnalyzer::Action()
     case 45:
     case 46:
     case 47:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += StmtList();
         break;
     case 38:
     case 39:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
         errors += StmtList();
         break;
     case 49:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
@@ -652,15 +637,14 @@ int SyntacticalAnalyzer::AnyOtherToken()
 
     switch (r) {
     case 50:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += MoreTokens();
         if (token == RPAREN_T) {
             token = lex->GetToken();
         }
         else {
-            lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                             "expected ')'");
+            REPORT_MISSING("')'");
             ++errors;
         }
         break;
@@ -694,17 +678,16 @@ int SyntacticalAnalyzer::AnyOtherToken()
     case 78:
     case 80:
     case 81:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         break;
     case 79:
-        p2file << "Using Rule " << static_cast<int>(r) << endl;
+        USING_RULE(r);
         token = lex->GetToken();
         errors += AnyOtherToken();
         break;
     case NoRule:
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                         "expected something else"); // TODO: expected what?
+        REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
