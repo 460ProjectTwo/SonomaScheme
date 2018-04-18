@@ -103,7 +103,7 @@ def check_firsts_action( ttype ):
                 'CONS_T':27, 'AND_T':28, 'OR_T':29,
                 'NOT_T':30, 'NUMBERP_T':31, 'SYMBOLP_T':32,
                 'LISTP_T':33, 'ZEROP_T':34, 'NULLP_T':35,
-                'STRINGOP_T':36, 'PLUS_T':37, 'MINUS_T':38,
+                'STRINGP_T':36, 'PLUS_T':37, 'MINUS_T':38,
                 'DIV_T':39, 'MULT_T':40, 'MODULO_T':41,
                 'EQUALTO_T':42, 'GT_T':43, 'LT_T':44,
                 'GTE_T':45, 'LTE_T':46, 'IDENT_T':47,
