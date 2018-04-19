@@ -47,7 +47,6 @@ SyntacticalAnalyzer::~SyntacticalAnalyzer()
 
 
 typedef char rule;
-typedef string funcName;
 enum { NoRule = 0 };
 
 enum non_terminal {
