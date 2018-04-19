@@ -1,0 +1,1 @@
+(define (NotList a) (not (list? a))) ; rule 30

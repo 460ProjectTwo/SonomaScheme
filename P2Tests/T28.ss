@@ -1,0 +1,1 @@
+(define (PositiveNumber a) (and (number? a) (<= 0 a))) ;rule 28 

@@ -1,0 +1,1 @@
+(define(LessThan a b) ( < a b));rule 44

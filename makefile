@@ -1,3 +1,6 @@
+ATF_CXX_CFLAGS = $(shell pkg-config --cflags atf-c++)
+ATF_CXX_LIBS = $(shell pkg-config --libs atf-c++)
+
 P2.out : Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
 	g++ -g -o P2.out Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
 
@@ -19,6 +22,9 @@ syntaxrules.hpp : tablegen.py
 clean :
 	rm -rf *.o P2.out *.gch
 
+test : P2.out
+	mypy tablegen.py
+	kyua test
 
 submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp makefile README.txt
 	rm -rf TeamSP2
@@ -32,3 +38,5 @@ submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.
 	cp README.txt TeamSP2
 	tar cfvz TeamSP2.tgz TeamSP2
 	cp TeamSP2.tgz ~tiawatts/cs460drop
+
+.PHONY: clean test submit

@@ -1,0 +1,1 @@
+(define(DisplayZ a) (display a));rule 48
