@@ -1,6 +1,6 @@
 Rule = int
 Token = str
-NoRule = 0
+NoRule: Rule = 0
 
 #
 # Firsts
