@@ -34,6 +34,8 @@ submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.
 	cp LexicalAnalyzer.cpp TeamSP2
 	cp SyntacticalAnalyzer.h TeamSP2
 	cp SyntacticalAnalyzer.cpp TeamSP2
+	cp tablegen.py TeamSP2
+	cp syntaxrules.hpp TeamSP2
 	cp makefile TeamSP2
 	cp README.txt TeamSP2
 	tar cfvz TeamSP2.tgz TeamSP2
