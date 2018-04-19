@@ -66,12 +66,12 @@ rule checkRule(non_terminal nt, token_type token)
 }
 
 
-#define USING_RULE(rule) \
+#define USING_RULE(rule)                                                \
     do { p2file << "Using rule " << static_cast<int>(rule) << endl; } while (0)
-#define REPORT_MISSING(expected) \
+#define REPORT_MISSING(expected)                                        \
     do { lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; " \
                           "expected " + (expected)); } while (0)
-#define USING_FUNCTION(funcName) \
+#define FUNCTION_ENTRY(funcName)                                        \
     do { p2file << "Entering " << funcName << " function; current token is: " \
                 << lex->GetTokenName(token) << endl; } while (0)
 #define FUNCTION_EXIT(funcName)                                         \
@@ -89,10 +89,11 @@ int SyntacticalAnalyzer::Program()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     // token should be in firsts of Program
 
     rule const r = checkRule(ntProgram, token);
-    USING_FUNCTION("Program");
     if (r != NoRule) {
         USING_RULE(r);
         errors += Define();
@@ -125,8 +126,10 @@ int SyntacticalAnalyzer::Define()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntDefine, token);
-    USING_FUNCTION("Define");
+
     if (r != NoRule) {
         USING_RULE(r);
         token = lex->GetToken();
@@ -197,8 +200,10 @@ int SyntacticalAnalyzer::MoreDefines()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntMoreDefines, token);
-    USING_FUNCTION("MoreDefines");
+
     switch (r) {
     case 3:
         USING_RULE(r);
@@ -232,8 +237,10 @@ int SyntacticalAnalyzer::StmtList()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntStmtList, token);
-    USING_FUNCTION("StmtList");
+
     switch (r) {
     case 5:
         USING_RULE(r);
@@ -267,8 +274,10 @@ int SyntacticalAnalyzer::Stmt()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntStmt, token);
-    USING_FUNCTION("Stmt");
+
     switch (r) {
     case 7:
         USING_RULE(r);
@@ -314,8 +323,10 @@ int SyntacticalAnalyzer::Literal()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntLiteral, token);
-    USING_FUNCTION("Literal");
+
     switch (r) {
     case 10:
     case 11:
@@ -351,8 +362,10 @@ int SyntacticalAnalyzer::QuotedLit()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntQuotedLit, token);
-    USING_FUNCTION("QuotedLit");
+
     if (r != NoRule) {
         USING_RULE(r);
         errors += AnyOtherToken();
@@ -378,8 +391,10 @@ int SyntacticalAnalyzer::MoreTokens()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntMoreTokens, token);
-    USING_FUNCTION("MoreTokens");
+
     switch (r) {
     case 14:
         USING_RULE(r);
@@ -413,8 +428,10 @@ int SyntacticalAnalyzer::ParamList()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntParamList, token);
-        USING_FUNCTION("ParamList");
+
     switch (r) {
     case 16:
         USING_RULE(r);
@@ -448,8 +465,10 @@ int SyntacticalAnalyzer::ElsePart()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntElsePart, token);
-    USING_FUNCTION("ElsePart");
+
     switch (r) {
     case 18:
         USING_RULE(r);
@@ -482,8 +501,10 @@ int SyntacticalAnalyzer::StmtPair()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntStmtPair, token);
-    USING_FUNCTION("StmtPair");
+
     switch (r) {
     case 20:
         USING_RULE(r);
@@ -517,8 +538,10 @@ int SyntacticalAnalyzer::StmtPairBody()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntStmtPairBody, token);
-    USING_FUNCTION("StmtPairBody");
+
     switch (r) {
     case 22:
         USING_RULE(r);
@@ -569,8 +592,10 @@ int SyntacticalAnalyzer::Action()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntAction, token);
-    USING_FUNCTION("Action");
+
     switch (r) {
     case 24:
         USING_RULE(r);
@@ -660,8 +685,10 @@ int SyntacticalAnalyzer::AnyOtherToken()
 {
     int errors = 0;
 
+    FUNCTION_ENTRY(__FUNCTION__);
+
     rule const r = checkRule(ntAnyOtherToken, token);
-    USING_FUNCTION("AnyOtherToken");
+
     switch (r) {
     case 50:
         USING_RULE(r);
