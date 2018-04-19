@@ -27,19 +27,19 @@ class SyntacticalAnalyzer
 	token_type token;
 
 	int Program();
-        int Define();
-        int MoreDefines();
-        int StmtList();
-        int Stmt();
-        int Literal();
-        int QuotedLit();
-        int MoreTokens();
-        int ParamList();
-        int ElsePart();
-        int StmtPair();
-        int StmtPairBody();
-        int Action();
-        int AnyOtherToken();
+  int Define();
+  int More_Defines();
+  int Stmt_List();
+  int Stmt();
+  int Literal();
+  int Quoted_Lit();
+  int More_Tokens();
+  int Param_List();
+  int Else_Part();
+  int Stmt_Pair();
+  int Stmt_Pair_Body();
+  int Action();
+  int Any_Other_Token();
 };
 
 #endif

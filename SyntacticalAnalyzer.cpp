@@ -50,9 +50,9 @@ typedef char rule;
 enum { NoRule = 0 };
 
 enum non_terminal {
-    ntProgram, ntDefine, ntMoreDefines, ntStmtList, ntStmt, ntLiteral,
-    ntQuotedLit, ntMoreTokens, ntParamList, ntElsePart, ntStmtPair,
-    ntStmtPairBody, ntAction, ntAnyOtherToken
+    ntProgram, ntDefine, ntMore_Defines, ntStmt_List, ntStmt, ntLiteral,
+    ntQuoted_Lit, ntMore_Tokens, ntParam_List, ntElse_Part, ntStmt_Pair,
+    ntStmt_Pair_Body, ntAction, ntAny_Other_Token
 };
 
 rule checkRule(non_terminal nt, token_type token)
@@ -65,15 +65,15 @@ rule checkRule(non_terminal nt, token_type token)
     return rules[nt][token];
 }
 
-
 #define USING_RULE(rule)                                                \
-    do { p2file << "Using rule " << static_cast<int>(rule) << endl; } while (0)
+    do { p2file << "Using Rule " << static_cast<int>(rule) << endl; } while (0)
 #define REPORT_MISSING(expected)                                        \
     do { lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; " \
                           "expected " + (expected)); } while (0)
 #define FUNCTION_ENTRY(funcName)                                        \
     do { p2file << "Entering " << funcName << " function; current token is: " \
-                << lex->GetTokenName(token) << endl; } while (0)
+                << lex->GetTokenName(token) << ", lexeme: "             \
+                << lex->GetLexeme() << endl; } while (0)
 #define FUNCTION_EXIT(funcName)                                         \
     do { p2file << "Exiting " << funcName << " function; current token is: " \
                 << lex->GetTokenName(token) << endl; } while (0)
@@ -94,10 +94,11 @@ int SyntacticalAnalyzer::Program()
     // token should be in firsts of Program
 
     rule const r = checkRule(ntProgram, token);
+
     if (r != NoRule) {
         USING_RULE(r);
         errors += Define();
-        errors += MoreDefines();
+        errors += More_Defines();
         if (token != EOF_T) {
             REPORT_MISSING("end of file");
             ++errors;
@@ -163,7 +164,7 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
-    errors += ParamList();
+    errors += Param_List();
 
     if (token == RPAREN_T) {
         token = lex->GetToken();
@@ -174,7 +175,7 @@ int SyntacticalAnalyzer::Define()
     }
 
     errors += Stmt();
-    errors += StmtList();
+    errors += Stmt_List();
 
     if (token == RPAREN_T) {
         token = lex->GetToken();
@@ -196,19 +197,19 @@ int SyntacticalAnalyzer::Define()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::MoreDefines()
+int SyntacticalAnalyzer::More_Defines()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntMoreDefines, token);
+    rule const r = checkRule(ntMore_Defines, token);
 
     switch (r) {
     case 3:
         USING_RULE(r);
         errors += Define();
-        errors += MoreDefines();
+        errors += More_Defines();
         break;
     case 4:
         USING_RULE(r);
@@ -218,7 +219,7 @@ int SyntacticalAnalyzer::MoreDefines()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::MoreDefines()";
+        throw "unhandled rule in SyntacticalAnalyzer::More_Defines()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -233,19 +234,19 @@ int SyntacticalAnalyzer::MoreDefines()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::StmtList()
+int SyntacticalAnalyzer::Stmt_List()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntStmtList, token);
+    rule const r = checkRule(ntStmt_List, token);
 
     switch (r) {
     case 5:
         USING_RULE(r);
         errors += Stmt();
-        errors += StmtList();
+        errors += Stmt_List();
         break;
     case 6:
         USING_RULE(r);
@@ -255,7 +256,7 @@ int SyntacticalAnalyzer::StmtList()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::StmtList()";
+        throw "unhandled rule in SyntacticalAnalyzer::Stmt_List()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -336,7 +337,7 @@ int SyntacticalAnalyzer::Literal()
     case 12:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += QuotedLit();
+        errors += Quoted_Lit();
         break;
     case NoRule:
         REPORT_MISSING("something else"); // TODO: expected what?
@@ -358,17 +359,17 @@ int SyntacticalAnalyzer::Literal()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::QuotedLit()
+int SyntacticalAnalyzer::Quoted_Lit()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntQuotedLit, token);
+    rule const r = checkRule(ntQuoted_Lit, token);
 
     if (r != NoRule) {
         USING_RULE(r);
-        errors += AnyOtherToken();
+        errors += Any_Other_Token();
     }
     else {
         REPORT_MISSING("something else"); // TODO: expected what?
@@ -387,19 +388,19 @@ int SyntacticalAnalyzer::QuotedLit()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::MoreTokens()
+int SyntacticalAnalyzer::More_Tokens()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntMoreTokens, token);
+    rule const r = checkRule(ntMore_Tokens, token);
 
     switch (r) {
     case 14:
         USING_RULE(r);
-        errors += AnyOtherToken();
-        errors += MoreTokens();
+        errors += Any_Other_Token();
+        errors += More_Tokens();
         break;
     case 15:
         USING_RULE(r);
@@ -409,7 +410,7 @@ int SyntacticalAnalyzer::MoreTokens()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::MoreTokens()";
+        throw "unhandled rule in SyntacticalAnalyzer::More_Tokens()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -424,19 +425,19 @@ int SyntacticalAnalyzer::MoreTokens()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::ParamList()
+int SyntacticalAnalyzer::Param_List()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntParamList, token);
+    rule const r = checkRule(ntParam_List, token);
 
     switch (r) {
     case 16:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += ParamList();
+        errors += Param_List();
         break;
     case 17:
         USING_RULE(r);
@@ -446,7 +447,7 @@ int SyntacticalAnalyzer::ParamList()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::ParamList()";
+        throw "unhandled rule in SyntacticalAnalyzer::Param_List()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -461,13 +462,13 @@ int SyntacticalAnalyzer::ParamList()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::ElsePart()
+int SyntacticalAnalyzer::Else_Part()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntElsePart, token);
+    rule const r = checkRule(ntElse_Part, token);
 
     switch (r) {
     case 18:
@@ -482,7 +483,7 @@ int SyntacticalAnalyzer::ElsePart()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::ElsePart()";
+        throw "unhandled rule in SyntacticalAnalyzer::Else_Part()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -497,19 +498,19 @@ int SyntacticalAnalyzer::ElsePart()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::StmtPair()
+int SyntacticalAnalyzer::Stmt_Pair()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntStmtPair, token);
+    rule const r = checkRule(ntStmt_Pair, token);
 
     switch (r) {
     case 20:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += StmtPairBody();
+        errors += Stmt_Pair_Body();
         break;
     case 21:
         USING_RULE(r);
@@ -519,7 +520,7 @@ int SyntacticalAnalyzer::StmtPair()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::StmtPair()";
+        throw "unhandled rule in SyntacticalAnalyzer::Stmt_Pair()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -534,13 +535,13 @@ int SyntacticalAnalyzer::StmtPair()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::StmtPairBody()
+int SyntacticalAnalyzer::Stmt_Pair_Body()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntStmtPairBody, token);
+    rule const r = checkRule(ntStmt_Pair_Body, token);
 
     switch (r) {
     case 22:
@@ -554,7 +555,7 @@ int SyntacticalAnalyzer::StmtPairBody()
             REPORT_MISSING("')'");
             ++errors;
         }
-        errors += StmtPair();
+        errors += Stmt_Pair();
         break;
     case 23:
         USING_RULE(r);
@@ -573,7 +574,7 @@ int SyntacticalAnalyzer::StmtPairBody()
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::StmtPairBody()";
+        throw "unhandled rule in SyntacticalAnalyzer::Stmt_Pair_Body()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
@@ -602,7 +603,7 @@ int SyntacticalAnalyzer::Action()
         token = lex->GetToken();
         errors += Stmt();
         errors += Stmt();
-        errors += ElsePart();
+        errors += Else_Part();
         break;
     case 25:
         USING_RULE(r);
@@ -614,7 +615,7 @@ int SyntacticalAnalyzer::Action()
             REPORT_MISSING("'('");
             ++errors;
         }
-        errors += StmtPairBody();
+        errors += Stmt_Pair_Body();
         break;
     case 26:
     case 30:
@@ -648,14 +649,14 @@ int SyntacticalAnalyzer::Action()
     case 47:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += StmtList();
+        errors += Stmt_List();
         break;
     case 38:
     case 39:
         USING_RULE(r);
         token = lex->GetToken();
         errors += Stmt();
-        errors += StmtList();
+        errors += Stmt_List();
         break;
     case 49:
         USING_RULE(r);
@@ -681,19 +682,19 @@ int SyntacticalAnalyzer::Action()
 * Return value:                                                                *
 * Description: This function will                                              *
 *******************************************************************************/
-int SyntacticalAnalyzer::AnyOtherToken()
+int SyntacticalAnalyzer::Any_Other_Token()
 {
     int errors = 0;
 
     FUNCTION_ENTRY(__FUNCTION__);
 
-    rule const r = checkRule(ntAnyOtherToken, token);
+    rule const r = checkRule(ntAny_Other_Token, token);
 
     switch (r) {
     case 50:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += MoreTokens();
+        errors += More_Tokens();
         if (token == RPAREN_T) {
             token = lex->GetToken();
         }
@@ -738,14 +739,14 @@ int SyntacticalAnalyzer::AnyOtherToken()
     case 79:
         USING_RULE(r);
         token = lex->GetToken();
-        errors += AnyOtherToken();
+        errors += Any_Other_Token();
         break;
     case NoRule:
         REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
         break;
     default:
-        throw "unhandled rule in SyntacticalAnalyzer::AnyOtherToken()";
+        throw "unhandled rule in SyntacticalAnalyzer::Any_Other_Token()";
     }
 
     FUNCTION_EXIT(__FUNCTION__);
