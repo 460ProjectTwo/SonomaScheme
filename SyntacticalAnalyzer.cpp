@@ -73,7 +73,10 @@ rule checkRule(non_terminal nt, token_type token)
                           "expected " + (expected)); } while (0)
 #define USING_FUNCTION(funcName) \
     do { p2file << "Entering " << funcName << " function; current token is: " \
-		<< lex->GetTokenName(token) << endl;} while (0)
+                << lex->GetTokenName(token) << endl; } while (0)
+#define FUNCTION_EXIT(funcName)                                         \
+    do { p2file << "Exiting " << funcName << " function; current token is: " \
+                << lex->GetTokenName(token) << endl; } while (0)
 
 /*******************************************************************************
 * Function:                                                                    *
@@ -107,8 +110,7 @@ int SyntacticalAnalyzer::Program()
 
     // token should be in follows of Program
 
-    p2file << "Exiting Program function; current token is: "
-           << lex->GetTokenName(token) << endl;
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -180,6 +182,8 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -213,6 +217,8 @@ int SyntacticalAnalyzer::MoreDefines()
         throw "unhandled rule in SyntacticalAnalyzer::MoreDefines()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -245,6 +251,8 @@ int SyntacticalAnalyzer::StmtList()
     default:
         throw "unhandled rule in SyntacticalAnalyzer::StmtList()";
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -291,6 +299,8 @@ int SyntacticalAnalyzer::Stmt()
         throw "unhandled rule in SyntacticalAnalyzer::Stmt()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -326,6 +336,8 @@ int SyntacticalAnalyzer::Literal()
         throw "unhandled rule in SyntacticalAnalyzer::Literal()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -350,6 +362,8 @@ int SyntacticalAnalyzer::QuotedLit()
         REPORT_MISSING("something else"); // TODO: expected what?
         ++errors;
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -384,6 +398,8 @@ int SyntacticalAnalyzer::MoreTokens()
         throw "unhandled rule in SyntacticalAnalyzer::MoreTokens()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -417,6 +433,8 @@ int SyntacticalAnalyzer::ParamList()
         throw "unhandled rule in SyntacticalAnalyzer::ParamList()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -448,6 +466,8 @@ int SyntacticalAnalyzer::ElsePart()
     default:
         throw "unhandled rule in SyntacticalAnalyzer::ElsePart()";
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -481,6 +501,8 @@ int SyntacticalAnalyzer::StmtPair()
     default:
         throw "unhandled rule in SyntacticalAnalyzer::StmtPair()";
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -531,6 +553,8 @@ int SyntacticalAnalyzer::StmtPairBody()
     default:
         throw "unhandled rule in SyntacticalAnalyzer::StmtPairBody()";
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
@@ -621,6 +645,8 @@ int SyntacticalAnalyzer::Action()
         throw "unhandled rule in SyntacticalAnalyzer::Action()";
     }
 
+    FUNCTION_EXIT(__FUNCTION__);
+
     return errors;
 }
 
@@ -695,6 +721,8 @@ int SyntacticalAnalyzer::AnyOtherToken()
     default:
         throw "unhandled rule in SyntacticalAnalyzer::AnyOtherToken()";
     }
+
+    FUNCTION_EXIT(__FUNCTION__);
 
     return errors;
 }
