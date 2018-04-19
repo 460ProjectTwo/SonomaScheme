@@ -87,7 +87,6 @@ rule checkRule(non_terminal nt, token_type token)
 *******************************************************************************/
 int SyntacticalAnalyzer::Program()
 {
-   
     int errors = 0;
 
     // token should be in firsts of Program
@@ -99,7 +98,7 @@ int SyntacticalAnalyzer::Program()
         errors += Define();
         errors += MoreDefines();
         if (token != EOF_T) {
-            lex->ReportError("Missing end of file at end of program");
+            REPORT_MISSING("end of file");
             ++errors;
         }
     }
