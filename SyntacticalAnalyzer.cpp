@@ -1,6 +1,6 @@
 /*******************************************************************************
 * Assignment: Project 2 - Syntactic Analyzer for Scheme to C++ Translator      *
-* Author: Devin Brown                                                          *
+* Authors: Devin Brown & Ryan Moeller                                          *
 * Date: Spring 2018                                                            *
 * File: SyntacticalAnalyzer.cpp                                                *
 *                                                                              *
@@ -20,7 +20,7 @@ using namespace std;
 * Function: Syntactical Analyzer                                               *
 *                                                                              *
 * Parameters: char * filename                                                  *
-* Return value: no return value                                                * 
+* Return value: no return value                                                *
 * Description: This function will open the file to be analyzed and load its    *
 * contents into the lexical analyzer.                                          *
 * It will also open the used to write the results of the syntacit analysis to  *
@@ -325,7 +325,7 @@ int SyntacticalAnalyzer::Stmt()
 *                                                                              *
 * Parameters: no parameters                                                    *
 * Return value: integer representing the number of return values               *
-* Description: This function will check for NUMLIT_T or STRLIT_T or                *
+* Description: This function will check for NUMLIT_T or STRLIT_T or            *
 * QUOTE then call function quoted_lit                                          *
 *******************************************************************************/
 int SyntacticalAnalyzer::Literal()
@@ -395,7 +395,7 @@ int SyntacticalAnalyzer::Quoted_Lit()
 *                                                                              *
 * Parameters: function takes no parameters                                     *
 * Return value: integer representing the number of errors                      *
-* Description: This function will check for any_other_token then call itself   * 
+* Description: This function will check for any_other_token then call itself   *
 * or it can do nothing                                                         *
 *******************************************************************************/
 int SyntacticalAnalyzer::More_Tokens()
@@ -434,7 +434,7 @@ int SyntacticalAnalyzer::More_Tokens()
 * Parameters: no parameters                                                    *
 * Return value: integer representing the number of errors                      *
 * Description: This function will check for IDENT_T then call itself           *
-* or it will do nothing                                                        *                
+* or it will do nothing                                                        *
 *******************************************************************************/
 int SyntacticalAnalyzer::Param_List()
 {
