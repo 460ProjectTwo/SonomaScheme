@@ -1,10 +1,11 @@
 /*******************************************************************************
 * Assignment: Project 2 - Syntactic Analyzer for Scheme to C++ Translator      *
-* Author:                                                                      *
+* Author: Devin Brown                                                          *
 * Date: Spring 2018                                                            *
 * File: SyntacticalAnalyzer.cpp                                                *
 *                                                                              *
-* Description: This file contains the                                          *
+* Description: This file contains the functions necessary to                   *
+* analyze the syntax for the language specificed in project 2                  *
 *******************************************************************************/
 
 #include <iostream>
@@ -16,11 +17,13 @@
 using namespace std;
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Syntactical Analyzer                                               *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: char * filename                                                  *
+* Return value: no return value                                                * 
+* Description: This function will open the file to be analyzed and load its    *
+* contents into the lexical analyzer.                                          *
+* It will also open the used to write the results of the syntacit analysis to  *
 *******************************************************************************/
 SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
 {
@@ -33,11 +36,12 @@ SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Syntactical Analyzer Destructor                                    *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: takes no parameters                                              *
+* Return value: no return value                                                *
+* Description: This function will free up lex from memory and close            *
+*  the .p2 results file                                                        *
 *******************************************************************************/
 SyntacticalAnalyzer::~SyntacticalAnalyzer()
 {
@@ -79,11 +83,12 @@ rule checkRule(non_terminal nt, token_type token)
                 << lex->GetTokenName(token) << endl; } while (0)
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Program                                                            *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: takes no parameters                                              *
+* Return value: returns an integer represent the number of erros               *
+* Description: This function is called from the constructor and is the first   *
+* check for valid syntax                                                       *
 *******************************************************************************/
 int SyntacticalAnalyzer::Program()
 {
@@ -116,11 +121,12 @@ int SyntacticalAnalyzer::Program()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Define                                                             *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: takes no parameters                                              *
+* Return value: integer representing the number of errors                      *
+* Description: This function will expect to find ( and ) and will call         *
+* functions Define Param_List Stmt Stmt_List                                   *
 *******************************************************************************/
 int SyntacticalAnalyzer::Define()
 {
@@ -190,11 +196,11 @@ int SyntacticalAnalyzer::Define()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: More Defines                                                       *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will call defines or it can do nothing            *
 *******************************************************************************/
 int SyntacticalAnalyzer::MoreDefines()
 {
@@ -227,11 +233,11 @@ int SyntacticalAnalyzer::MoreDefines()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Stmt List                                                          *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will call stmt or can do nothing                  *
 *******************************************************************************/
 int SyntacticalAnalyzer::StmtList()
 {
@@ -264,11 +270,12 @@ int SyntacticalAnalyzer::StmtList()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Stmt                                                               *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number errors                         *
+* Description: This function will call literal or an IDENT_T or it will look   *
+* for ( then call function action                                              *
 *******************************************************************************/
 int SyntacticalAnalyzer::Stmt()
 {
@@ -313,11 +320,12 @@ int SyntacticalAnalyzer::Stmt()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Literal                                                            *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of return values               *
+* Description: This function will check for NUMLIT_T or STRLIT_T or                *
+* QUOTE then call function quoted_lit                                          *
 *******************************************************************************/
 int SyntacticalAnalyzer::Literal()
 {
@@ -352,11 +360,12 @@ int SyntacticalAnalyzer::Literal()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Quoted Lit                                                         *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for a token in the set                 *
+* any other token                                                              *
 *******************************************************************************/
 int SyntacticalAnalyzer::QuotedLit()
 {
@@ -381,11 +390,12 @@ int SyntacticalAnalyzer::QuotedLit()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: More Tokens                                                        *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: function takes no parameters                                     *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for any_other_token then call itself   * 
+* or it can do nothing                                                         *
 *******************************************************************************/
 int SyntacticalAnalyzer::MoreTokens()
 {
@@ -418,11 +428,12 @@ int SyntacticalAnalyzer::MoreTokens()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Param List                                                         *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for IDENT_T then call itself           *
+* or it will do nothing                                                        *                
 *******************************************************************************/
 int SyntacticalAnalyzer::ParamList()
 {
@@ -455,11 +466,11 @@ int SyntacticalAnalyzer::ParamList()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Else Part                                                          *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will call stmt or do nothing                      *
 *******************************************************************************/
 int SyntacticalAnalyzer::ElsePart()
 {
@@ -491,11 +502,12 @@ int SyntacticalAnalyzer::ElsePart()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Stmt Pair                                                          *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for ( then call stmt_pair_body         *
+* or do nothing                                                                *
 *******************************************************************************/
 int SyntacticalAnalyzer::StmtPair()
 {
@@ -528,11 +540,12 @@ int SyntacticalAnalyzer::StmtPair()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Stmt Pair Body                                                     *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will call stmt then stmt then check for )         *
+* then call itself or check for ELSE_T then call stmt and check for )          *
 *******************************************************************************/
 int SyntacticalAnalyzer::StmtPairBody()
 {
@@ -582,11 +595,12 @@ int SyntacticalAnalyzer::StmtPairBody()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Action                                                             *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for an operator then call either stmt  *
+* or stmt_list or both in any order                                            *
 *******************************************************************************/
 int SyntacticalAnalyzer::Action()
 {
@@ -675,11 +689,13 @@ int SyntacticalAnalyzer::Action()
 }
 
 /*******************************************************************************
-* Function:                                                                    *
+* Function: Any Other Token                                                    *
 *                                                                              *
-* Parameters:                                                                  *
-* Return value:                                                                *
-* Description: This function will                                              *
+* Parameters: no parameters                                                    *
+* Return value: integer representing the number of errors                      *
+* Description: This function will check for a token in any_other_token set     *
+* if token is LPAREN_T more tokens is call followed by a check for RPAREN_T    *
+* if QUOTE_T is found the function calls itself                                *
 *******************************************************************************/
 int SyntacticalAnalyzer::AnyOtherToken()
 {
