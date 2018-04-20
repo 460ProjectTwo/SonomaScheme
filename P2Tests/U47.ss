@@ -1,0 +1,1 @@
+(define (ident) (IDENT_T))
