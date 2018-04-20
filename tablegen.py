@@ -117,8 +117,8 @@ def check_firsts_action( token: Token ) -> Rule:
 
 def check_firsts_aot( token: Token ) -> Rule:
     getrule = { 'LPAREN_T':50, 'IDENT_T':51, 'NUMLIT_T':52,
-                'STRLIT_T':53, 'CONST_T':54, 'IF_T':55,
-                'DISPLAY_T':56, 'NEWLINE_T':57,'LISTOP_T':58,
+                'STRLIT_T':53, 'CONS_T':54, 'IF_T':55,
+                'DISPLAY_T':56, 'NEW0;95;0cLINE_T':57,'LISTOP_T':58,
                 'AND_T':59, 'OR_T':60, 'NOT_T':61,
                 'DEFINE_T':62, 'NUMBERP_T':63,'SYMBOLP_T':64,
                 'LISTP_T':65, 'ZEROP_T':66, 'NULLP_T':67,
