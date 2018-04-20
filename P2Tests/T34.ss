@@ -1,0 +1,1 @@
+(define (isZero a) (zero? a)) ;rule 34

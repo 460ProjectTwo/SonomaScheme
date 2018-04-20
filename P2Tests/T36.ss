@@ -1,0 +1,1 @@
+(define(isString a) (string? a)) ;rule 36

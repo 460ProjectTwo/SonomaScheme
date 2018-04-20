@@ -1,0 +1,1 @@
+(define(Mult a b) (* a b)) ;rule 40

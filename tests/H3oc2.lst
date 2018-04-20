@@ -1,0 +1,25 @@
+Input file: H3oc2.ss
+   1: ;; Function: odd_copy
+   2: ;; Input parameter: a list
+   3: ;; Return value: a list containing every other element of the
+   4: ;;               input list. 
+   5: ;; Description: Starting with the first value in the input list,
+   6: ;;              this function will create and return a list
+   7: ;;              containing every other element of the input
+   8: ;;              parameter list. 
+   9: 
+  10: (define (odd_copy ls)
+  11: 	(cond ((not (list? ls)) "odd copy requires a list argument")
+  12: 	      ((null? ls) '())
+  13: 	      ((null? (cdr ls)) ls)
+  14: 	      (else (cons (car ls) (odd_copy (cddr ls))))
+  15:         )
+  16: )
+  17: 
+  18: (define (main)
+  19: 	(display (odd_copy '(1 3 5 7)))
+  20: 	(newline)
+  21: 	(display (odd_copy '(1 3 5 7 9)))
+  22: 	(newline)
+  23: )
+0 errors found in input file
