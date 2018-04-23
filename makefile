@@ -13,11 +13,11 @@ SetLimits.o : SetLimits.cpp SetLimits.h
 LexicalAnalyzer.o : LexicalAnalyzer.cpp LexicalAnalyzer.h
 	g++ -g -c -std=c++11 LexicalAnalyzer.cpp
 
-SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h syntaxrules.hpp
+SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h firsts.hpp follows.hpp
 	g++ -g -c -std=c++11 SyntacticalAnalyzer.cpp
 
-syntaxrules.hpp : tablegen.py
-	python3 tablegen.py > syntaxrules.hpp
+firsts.hpp follows.hpp: tablegen.py
+	python3 tablegen.py
 
 clean :
 	rm -rf *.o P2.out *.gch
@@ -35,7 +35,8 @@ submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.
 	cp SyntacticalAnalyzer.h TeamSP2
 	cp SyntacticalAnalyzer.cpp TeamSP2
 	cp tablegen.py TeamSP2
-	cp syntaxrules.hpp TeamSP2
+	cp firsts.hpp TeamSP2
+	cp follows.hpp TeamSP2
 	cp makefile TeamSP2
 	cp README.txt TeamSP2
 	tar cfvz TeamSP2.tgz TeamSP2
