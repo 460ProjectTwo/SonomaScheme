@@ -1,0 +1,47 @@
+#! /usr/bin/env atf-sh
+
+base_head() {
+    atf_set "descr" "${1}"
+    atf_set "require.files" "$(atf_get_srcdir)/${1}"
+    atf_set "require.progs" "diff P2.out"
+}
+base_body() {
+    cp $(atf_get_srcdir)/${1} test.ss
+    atf_check -o ignore -e ignore P2.out test.ss
+    atf_check diff -wu $(atf_get_srcdir)/${1%%.ss}.p2 test.p2
+}
+base_cleanup() {
+    rm test.*
+}
+
+atf_test_case H3oc1
+H3oc1_head() {
+    base_head "H3oc1.ss"
+}
+H3oc1_body() {
+    base_body "H3oc1.ss"
+}
+H3oc1_cleanup() {
+    base_cleanup
+}
+
+atf_test_case H3oc2
+H3oc2_head() {
+    base_head "H3oc2.ss"
+}
+H3oc2_body() {
+    base_body "H3oc2.ss"
+}
+H3oc2_cleanup() {
+    base_cleanup
+}
+
+atf_init_test_cases() {
+    atf_add_test_case H3oc1
+    atf_add_test_case H3oc2
+}
+
+# Local Variables:
+# mode: sh
+# End:
+# vim: filetype=sh fileformat=unix

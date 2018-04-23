@@ -1,0 +1,6 @@
+PATH=${PATH}:${PWD}
+if [ $(hostname)x = "blue.cs.sonoma.edu"x ]
+then
+        PATH=${PATH}:/home/student/rmoeller/.local
+fi
+export PATH

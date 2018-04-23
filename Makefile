@@ -1,6 +1,3 @@
-ATF_CXX_CFLAGS = $(shell pkg-config --cflags atf-c++)
-ATF_CXX_LIBS = $(shell pkg-config --libs atf-c++)
-
 P2.out : Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
 	g++ -g -o P2.out Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
 
@@ -24,22 +21,15 @@ clean :
 
 test : P2.out
 	mypy tablegen.py
-	kyua test
+	. ./test-env && kyua test
 
-submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp makefile README.txt
+submit : test do-submit
+
+do-submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp tablegen.py firsts.hpp follows.hpp Makefile README.txt
 	rm -rf TeamSP2
 	mkdir TeamSP2
-	cp Project2.cpp TeamSP2
-	cp LexicalAnalyzer.h TeamSP2
-	cp LexicalAnalyzer.cpp TeamSP2
-	cp SyntacticalAnalyzer.h TeamSP2
-	cp SyntacticalAnalyzer.cpp TeamSP2
-	cp tablegen.py TeamSP2
-	cp firsts.hpp TeamSP2
-	cp follows.hpp TeamSP2
-	cp makefile TeamSP2
-	cp README.txt TeamSP2
+	cp $^ TeamSP2
 	tar cfvz TeamSP2.tgz TeamSP2
 	cp TeamSP2.tgz ~tiawatts/cs460drop
 
-.PHONY: clean test submit
+.PHONY: clean test submit do-submit
