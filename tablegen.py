@@ -10,8 +10,13 @@ NoRule: Rule = 0
 # Firsts
 #
 
+# Functions decorated with @firsts_check are added to this list.
 FirstsChecks = []
-def check_firsts(f):
+
+def firsts_check(f):
+    """
+    Wraps f with an LRU cache and adds it to the list of firsts checks.
+    """
     @wraps(f)
     @lru_cache(maxsize=None)
     def wrapper(token: Token) -> Rule:
@@ -20,21 +25,21 @@ def check_firsts(f):
     return wrapper
 
 
-@check_firsts
+@firsts_check
 def check_firsts_program( token: Token ) -> Rule:
     if check_firsts_define( token ):
         return 1
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_define( token: Token ) -> Rule:
     if token == 'LPAREN_T':
         return 2
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_more_defines( token: Token ) -> Rule:
     if check_firsts_define(token):
         return 3
@@ -43,7 +48,7 @@ def check_firsts_more_defines( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_stmt_list( token: Token ) -> Rule:
     if check_firsts_stmt(token):
         return 5;
@@ -52,7 +57,7 @@ def check_firsts_stmt_list( token: Token ) -> Rule:
     return NoRule;
 
 
-@check_firsts
+@firsts_check
 def check_firsts_stmt( token: Token ) -> Rule:
     if check_firsts_literal(token):
         return 7
@@ -63,7 +68,7 @@ def check_firsts_stmt( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_literal( token: Token ) -> Rule:
     if token == 'NUMLIT_T':
         return 10
@@ -74,14 +79,14 @@ def check_firsts_literal( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_quoted_lit( token: Token ) -> Rule:
     if check_firsts_aot( token ):
         return 13
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_more_tokens( token: Token ) -> Rule:
     if check_firsts_aot( token ):
         return 14
@@ -90,7 +95,7 @@ def check_firsts_more_tokens( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_param_list( token: Token ) -> Rule:
     if token == 'IDENT_T':
         return 16
@@ -99,7 +104,7 @@ def check_firsts_param_list( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_else_part( token: Token ) -> Rule:
     if check_firsts_stmt( token ):
         return 18
@@ -108,7 +113,7 @@ def check_firsts_else_part( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_stmt_pair( token: Token ) -> Rule:
     if token == 'LPAREN_T':
         return 20
@@ -117,7 +122,7 @@ def check_firsts_stmt_pair( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_stmt_pair_body( token: Token ) -> Rule:
     if check_firsts_stmt( token ):
         return 22
@@ -126,7 +131,7 @@ def check_firsts_stmt_pair_body( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_action( token: Token ) -> Rule:
     getrule = { 'IF_T':24, 'COND_T':25, 'LISTOP_T':26,
                 'CONS_T':27, 'AND_T':28, 'OR_T':29,
@@ -142,7 +147,7 @@ def check_firsts_action( token: Token ) -> Rule:
     return NoRule
 
 
-@check_firsts
+@firsts_check
 def check_firsts_aot( token: Token ) -> Rule:
     getrule = { 'LPAREN_T':50, 'IDENT_T':51, 'NUMLIT_T':52,
                 'STRLIT_T':53, 'CONS_T':54, 'IF_T':55,
@@ -163,8 +168,13 @@ def check_firsts_aot( token: Token ) -> Rule:
 # Follows
 #
 
+# Functions decorated with @follows_check are added to this list.
 FollowsChecks = []
-def check_follows(f):
+
+def follows_check(f):
+    """
+    Wraps f with an LRU cache and adds it to the list of follows checks.
+    """
     @wraps(f)
     @lru_cache(maxsize=None)
     def wrapper(token: Token) -> bool:
@@ -173,76 +183,76 @@ def check_follows(f):
     return wrapper
 
 
-@check_follows
+@follows_check
 def check_follows_program( token: Token ) -> bool:
     return token == 'EOF_T'
 
 
-@check_follows
+@follows_check
 def check_follows_define( token: Token ) -> bool:
     return check_firsts_more_defines( token ) != NoRule
 
 
-@check_follows
+@follows_check
 def check_follows_more_defines( token: Token ) -> bool:
     return token == 'EOF_T'
 
 
-@check_follows
+@follows_check
 def check_follows_stmt_list( token: Token ) -> bool:
     return token == 'RPAREN_T' or check_follows_action( token )
 
 
-@check_follows
+@follows_check
 def check_follows_stmt( token: Token ) -> bool:
     if check_firsts_stmt_list( token ):
         return True
     return check_follows_else_part( token )
 
 
-@check_follows
+@follows_check
 def check_follows_literal( token: Token ) -> bool:
     return check_follows_stmt( token )
 
 
-@check_follows
+@follows_check
 def check_follows_quoted_lit( token: Token ) -> bool:
     return check_follows_literal( token )
 
 
-@check_follows
+@follows_check
 def check_follows_more_tokens( token: Token ) -> bool:
     return token == 'RPAREN_T'
 
 
 #TODO double check follows here
-@check_follows
+@follows_check
 def check_follows_param_list( token: Token ) -> bool:
     return token == 'RPAREN_T'
 
 
-@check_follows
+@follows_check
 def check_follows_else_part( token: Token ) -> bool:
     return check_follows_action( token )
 
 
-@check_follows
+@follows_check
 def check_follows_stmt_pair( token: Token ) -> bool:
     return check_follows_stmt_pair_body( token )
 
 
 #check_follows_stmt_pair( token ) or \
-@check_follows
+@follows_check
 def check_follows_stmt_pair_body( token: Token ) -> bool:
     return check_follows_action( token )
 
 
-@check_follows
+@follows_check
 def check_follows_action( token: Token ) -> bool:
     return token == 'RPAREN_T'
 
 
-@check_follows
+@follows_check
 def check_follows_aot( token: Token ) -> bool:
     if check_firsts_more_tokens( token ):
         return True
@@ -296,13 +306,42 @@ TokenType = [
 #
 
 def array_initializer(l: list) -> str:
+    """
+    Given a nested list of integers, returns a string containing a C++ array
+    initializer for the list.
+
+    Example:
+    [[1, 2, 3], [4, 5, 6]] -> "{
+        {1, 2, 3},
+        {4, 5, 5}
+    };"
+    """
     return str(l).replace('[[','{\n\t{')  \
                  .replace('[','{')        \
                  .replace('], ','},\n\t') \
                  .replace(']]','}\n};')
 
 def bitmask_initializer(l: list) -> str:
-    l1 = [ hex(sum(bit << i for (i, bit) in enumerate(row))) + 'ULL' for row in l]
+    """
+    Given a nested list of values in {0,1}, returns a string containing a C++
+    array initializer for bitmasks corresponding to the inner lists.
+
+    The bitmask values are unsigned long long, so the inner lists can have at
+    most 64 values each.
+
+    A bit can then be checked in C++ as follows:
+    if (masks[row] & (1ULL << col))
+        // Bit was set
+        doSomething();
+
+    Example:
+    [[1, 0, 0, 1, 0], [0, 1, 0, 1, 1]] -> "{
+        0x9ULL,
+        0x1aULL
+    };"
+    """
+    l1 = [ hex(sum(bit << i for (i, bit) in enumerate(row))) + 'ULL'
+           for row in l]
     return str(l1).replace('[','{\n\t')  \
                   .replace(', ',',\n\t') \
                   .replace(']','\n};')   \
@@ -313,12 +352,14 @@ def bitmask_initializer(l: list) -> str:
 #
 
 def main():
-    firsts_rules = [ [ check(t) for t in TokenType ] for check in FirstsChecks ]
+    firsts_rules = [ [ check(t) for t in TokenType ]
+                     for check in FirstsChecks ]
     with open('firsts.hpp', 'w') as f:
         f.write('static rule const firsts[][MAX_TOKENS] = ')
         f.write(array_initializer(firsts_rules))
 
-    follows_rules = [ [ 1 if check(t) else 0 for t in TokenType ] for check in FollowsChecks ]
+    follows_rules = [ [ 1 if check(t) else 0 for t in TokenType ]
+                      for check in FollowsChecks ]
     with open('follows.hpp', 'w') as f:
         f.write('static uint64_t const follows[] = ')
         f.write(bitmask_initializer(follows_rules))
