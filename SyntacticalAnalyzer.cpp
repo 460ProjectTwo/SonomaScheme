@@ -54,7 +54,7 @@ rule ruleOf(non_terminal nt, token_type token)
 {
 #include "firsts.hpp"
 
-    if (token <= NONE || token >= MAX_TOKENS)
+    if (token <= NONE or token >= MAX_TOKENS)
         return NoRule;
 
     return firsts[nt][token];
@@ -64,7 +64,7 @@ bool inFollows(non_terminal nt, token_type token)
 {
 #include "follows.hpp"
 
-    if (token <= NONE || token >= MAX_TOKENS)
+    if (token <= NONE or token >= MAX_TOKENS)
         return false;
 
     return follows[nt] & (1ULL << token);
@@ -100,9 +100,12 @@ rule SyntacticalAnalyzer::Seek_First_Or_Follow(const char * funcName,
 {
     rule r;
 
-    while ((r = ruleOf(nt, token)) == NoRule && !inFollows(nt, token)) {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found at "
-                         "beginning of " + funcName);
+    while ((r = ruleOf(nt, token)) == NoRule
+           and !inFollows(nt, token)
+           and token != EOF_T) {
+        lex->ReportError("unexpected '" + lex->GetLexeme() + "' "
+                         "(" + lex->GetTokenName(token) + ") "
+                         "found at beginning of " + funcName);
         ++errors;
         token = lex->GetToken();
     }
@@ -114,7 +117,8 @@ void SyntacticalAnalyzer::Seek_Follow(const char * funcName,
                                       non_terminal nt,
                                       int& errors)
 {
-    while (!inFollows(nt, token)) {
+    while (!inFollows(nt, token)
+           and token != EOF_T) {
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found at "
                          "end of " + funcName);
         ++errors;
