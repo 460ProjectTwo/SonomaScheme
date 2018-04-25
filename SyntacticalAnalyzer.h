@@ -54,8 +54,8 @@ class SyntacticalAnalyzer
     void Report_Missing(char const *);
     void Function_Entry(char const *);
     void Function_Exit(char const *);
-    rule Seek_First_Or_Follow(char const *, non_terminal);
-    void Seek_Follow(char const *, non_terminal);
+    rule Seek_First_Or_Follow(char const *, non_terminal, int&);
+    void Seek_Follow(char const *, non_terminal, int&);
 };
 
 #endif

@@ -95,24 +95,29 @@ void SyntacticalAnalyzer::Function_Exit(const char * funcName)
 }
 
 rule SyntacticalAnalyzer::Seek_First_Or_Follow(const char * funcName,
-                                               non_terminal nt)
+                                               non_terminal nt,
+                                               int& errors)
 {
     rule r;
 
     while ((r = ruleOf(nt, token)) == NoRule && !inFollows(nt, token)) {
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found at "
                          "beginning of " + funcName);
+        ++errors;
         token = lex->GetToken();
     }
 
     return r;
 }
 
-void SyntacticalAnalyzer::Seek_Follow(const char * funcName, non_terminal nt)
+void SyntacticalAnalyzer::Seek_Follow(const char * funcName,
+                                      non_terminal nt,
+                                      int& errors)
 {
     while (!inFollows(nt, token)) {
         lex->ReportError("unexpected '" + lex->GetLexeme() + "' found at "
                          "end of " + funcName);
+        ++errors;
         token = lex->GetToken();
     }
 }
@@ -132,7 +137,7 @@ int SyntacticalAnalyzer::Program()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntProgram);
+    rule const r = Seek_First_Or_Follow(__func__, ntProgram, errors);
 
     if (r != NoRule) {
         Using_Rule(r);
@@ -148,7 +153,7 @@ int SyntacticalAnalyzer::Program()
         ++errors;
     }
 
-    Seek_Follow(__func__, ntProgram);
+    Seek_Follow(__func__, ntProgram, errors);
 
     Function_Exit(__func__);
 
@@ -169,7 +174,7 @@ int SyntacticalAnalyzer::Define()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntDefine);
+    rule const r = Seek_First_Or_Follow(__func__, ntDefine, errors);
 
     if (r != NoRule) {
         Using_Rule(r);
@@ -225,7 +230,7 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
-    Seek_Follow(__func__, ntDefine);
+    Seek_Follow(__func__, ntDefine, errors);
 
     Function_Exit(__func__);
 
@@ -245,7 +250,7 @@ int SyntacticalAnalyzer::More_Defines()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntMore_Defines);
+    rule const r = Seek_First_Or_Follow(__func__, ntMore_Defines, errors);
 
     switch (r) {
     case 3:
@@ -264,7 +269,7 @@ int SyntacticalAnalyzer::More_Defines()
         throw "unhandled rule in SyntacticalAnalyzer::More_Defines()";
     }
 
-    Seek_Follow(__func__, ntMore_Defines);
+    Seek_Follow(__func__, ntMore_Defines, errors);
 
     Function_Exit(__func__);
 
@@ -284,7 +289,7 @@ int SyntacticalAnalyzer::Stmt_List()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntStmt_List);
+    rule const r = Seek_First_Or_Follow(__func__, ntStmt_List, errors);
 
     switch (r) {
     case 5:
@@ -303,7 +308,7 @@ int SyntacticalAnalyzer::Stmt_List()
         throw "unhandled rule in SyntacticalAnalyzer::Stmt_List()";
     }
 
-    Seek_Follow(__func__, ntStmt_List);
+    Seek_Follow(__func__, ntStmt_List, errors);
 
     Function_Exit(__func__);
 
@@ -324,7 +329,7 @@ int SyntacticalAnalyzer::Stmt()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntStmt);
+    rule const r = Seek_First_Or_Follow(__func__, ntStmt, errors);
 
     switch (r) {
     case 7:
@@ -355,7 +360,7 @@ int SyntacticalAnalyzer::Stmt()
         throw "unhandled rule in SyntacticalAnalyzer::Stmt()";
     }
 
-    Seek_Follow(__func__, ntStmt);
+    Seek_Follow(__func__, ntStmt, errors);
 
     Function_Exit(__func__);
 
@@ -376,7 +381,7 @@ int SyntacticalAnalyzer::Literal()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntLiteral);
+    rule const r = Seek_First_Or_Follow(__func__, ntLiteral, errors);
 
     switch (r) {
     case 10:
@@ -397,7 +402,7 @@ int SyntacticalAnalyzer::Literal()
         throw "unhandled rule in SyntacticalAnalyzer::Literal()";
     }
 
-    Seek_Follow(__func__, ntLiteral);
+    Seek_Follow(__func__, ntLiteral, errors);
 
     Function_Exit(__func__);
 
@@ -418,7 +423,7 @@ int SyntacticalAnalyzer::Quoted_Lit()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntQuoted_Lit);
+    rule const r = Seek_First_Or_Follow(__func__, ntQuoted_Lit, errors);
 
     if (r != NoRule) {
         Using_Rule(r);
@@ -429,7 +434,7 @@ int SyntacticalAnalyzer::Quoted_Lit()
         ++errors;
     }
 
-    Seek_Follow(__func__, ntQuoted_Lit);
+    Seek_Follow(__func__, ntQuoted_Lit, errors);
 
     Function_Exit(__func__);
 
@@ -450,7 +455,7 @@ int SyntacticalAnalyzer::More_Tokens()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntMore_Tokens);
+    rule const r = Seek_First_Or_Follow(__func__, ntMore_Tokens, errors);
 
     switch (r) {
     case 14:
@@ -469,7 +474,7 @@ int SyntacticalAnalyzer::More_Tokens()
         throw "unhandled rule in SyntacticalAnalyzer::More_Tokens()";
     }
 
-    Seek_Follow(__func__, ntMore_Tokens);
+    Seek_Follow(__func__, ntMore_Tokens, errors);
 
     Function_Exit(__func__);
 
@@ -490,7 +495,7 @@ int SyntacticalAnalyzer::Param_List()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntParam_List);
+    rule const r = Seek_First_Or_Follow(__func__, ntParam_List, errors);
 
     switch (r) {
     case 16:
@@ -509,7 +514,7 @@ int SyntacticalAnalyzer::Param_List()
         throw "unhandled rule in SyntacticalAnalyzer::Param_List()";
     }
 
-    Seek_Follow(__func__, ntParam_List);
+    Seek_Follow(__func__, ntParam_List, errors);
 
     Function_Exit(__func__);
 
@@ -529,7 +534,7 @@ int SyntacticalAnalyzer::Else_Part()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntElse_Part);
+    rule const r = Seek_First_Or_Follow(__func__, ntElse_Part, errors);
 
     switch (r) {
     case 18:
@@ -547,7 +552,7 @@ int SyntacticalAnalyzer::Else_Part()
         throw "unhandled rule in SyntacticalAnalyzer::Else_Part()";
     }
 
-    Seek_Follow(__func__, ntElse_Part);
+    Seek_Follow(__func__, ntElse_Part, errors);
 
     Function_Exit(__func__);
 
@@ -568,7 +573,7 @@ int SyntacticalAnalyzer::Stmt_Pair()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair);
+    rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair, errors);
 
     switch (r) {
     case 20:
@@ -587,7 +592,7 @@ int SyntacticalAnalyzer::Stmt_Pair()
         throw "unhandled rule in SyntacticalAnalyzer::Stmt_Pair()";
     }
 
-    Seek_Follow(__func__, ntStmt_Pair);
+    Seek_Follow(__func__, ntStmt_Pair, errors);
 
     Function_Exit(__func__);
 
@@ -608,7 +613,7 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair_Body);
+    rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair_Body, errors);
 
     switch (r) {
     case 22:
@@ -644,7 +649,7 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
         throw "unhandled rule in SyntacticalAnalyzer::Stmt_Pair_Body()";
     }
 
-    Seek_Follow(__func__, ntStmt_Pair_Body);
+    Seek_Follow(__func__, ntStmt_Pair_Body, errors);
 
     Function_Exit(__func__);
 
@@ -665,7 +670,7 @@ int SyntacticalAnalyzer::Action()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntAction);
+    rule const r = Seek_First_Or_Follow(__func__, ntAction, errors);
 
     switch (r) {
     case 24:
@@ -740,7 +745,7 @@ int SyntacticalAnalyzer::Action()
         throw "unhandled rule in SyntacticalAnalyzer::Action()";
     }
 
-    Seek_Follow(__func__, ntAction);
+    Seek_Follow(__func__, ntAction, errors);
 
     Function_Exit(__func__);
 
@@ -762,7 +767,7 @@ int SyntacticalAnalyzer::Any_Other_Token()
 
     Function_Entry(__func__);
 
-    rule const r = Seek_First_Or_Follow(__func__, ntAny_Other_Token);
+    rule const r = Seek_First_Or_Follow(__func__, ntAny_Other_Token, errors);
 
     switch (r) {
     case 50:
@@ -823,7 +828,7 @@ int SyntacticalAnalyzer::Any_Other_Token()
         throw "unhandled rule in SyntacticalAnalyzer::Any_Other_Token()";
     }
 
-    Seek_Follow(__func__, ntAny_Other_Token);
+    Seek_Follow(__func__, ntAny_Other_Token, errors);
 
     Function_Exit(__func__);
 
