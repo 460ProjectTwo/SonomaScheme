@@ -7,7 +7,17 @@ tests=""
 for path in ${TESTS_DIR}/*.ss
 do
     file=${path##${TESTS_DIR}/}
-    name=${file%%.ss}
+
+    case ${file} in
+        *.bad.ss)
+            name=${file%%.bad.ss}_bad
+            action="not-match"
+            ;;
+        *.ss)
+            name=${file%%.ss}
+            action="match"
+            ;;
+    esac
 
     atf_test_case ${name}
     eval "${name}_head() {
@@ -16,25 +26,7 @@ do
         atf_set require.progs P2.out
     }
     ${name}_body() {
-        atf_check -o match:'^0 errors' P2.out ${path}
-    }"
-
-    tests="${tests} ${name}"
-done
-
-for path in ${TESTS_DIR}/*.ss.bad
-do
-    file=${path##${TESTS_DIR}/}
-    name=${file%%.ss.bad}_bad
-
-    atf_test_case ${name}
-    eval "${name}_head() {
-        atf_set descr ${file}
-        atf_set require.files ${path}
-        atf_set require.progs P2.out
-    }
-    ${name}_body() {
-        atf_check -o not-match:'^0 errors' -s exit:1 P2.out ${path}
+        atf_check -o ${action}:'^0 errors' P2.out ${path}
     }"
 
     tests="${tests} ${name}"
