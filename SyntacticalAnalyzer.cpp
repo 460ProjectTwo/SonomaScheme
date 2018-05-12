@@ -26,12 +26,12 @@ using namespace std;
 * It will also open the used to write the results of the syntacit analysis to  *
 *******************************************************************************/
 SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
+    : lex(filename), gen(filename, &lex), token{lex.GetToken()}
 {
-    lex = new LexicalAnalyzer(filename);
     string name = filename;
     string p2name = name.substr(0, name.length()-3) + ".p2";
     p2file.open (p2name.c_str());
-    token = lex->GetToken();
+
     Program();
 }
 
@@ -45,7 +45,6 @@ SyntacticalAnalyzer::SyntacticalAnalyzer(char * filename)
 *******************************************************************************/
 SyntacticalAnalyzer::~SyntacticalAnalyzer()
 {
-    delete lex;
     p2file.close();
 }
 
@@ -77,21 +76,21 @@ void SyntacticalAnalyzer::Using_Rule(rule r)
 
 void SyntacticalAnalyzer::Report_Missing(char const *expected)
 {
-    lex->ReportError("unexpected '" + lex->GetLexeme() + "' found; "
-                     "expected " + (expected));
+    lex.ReportError("unexpected '" + lex.GetLexeme() + "' found; "
+                    "expected " + expected);
 }
 
 void SyntacticalAnalyzer::Function_Entry(const char * funcName)
 {
     p2file << "Entering " << funcName << " function; "
-           << "current token is: " << lex->GetTokenName(token) << ", "
-           << "lexeme: " << lex->GetLexeme() << endl;
+           << "current token is: " << lex.GetTokenName(token) << ", "
+           << "lexeme: " << lex.GetLexeme() << endl;
 }
 
 void SyntacticalAnalyzer::Function_Exit(const char * funcName)
 {
     p2file << "Exiting " << funcName << " function; "
-           << "current token is: " << lex->GetTokenName(token) << endl;
+           << "current token is: " << lex.GetTokenName(token) << endl;
 }
 
 rule SyntacticalAnalyzer::Seek_First_Or_Follow(const char * funcName,
@@ -103,11 +102,11 @@ rule SyntacticalAnalyzer::Seek_First_Or_Follow(const char * funcName,
     while ((r = ruleOf(nt, token)) == NoRule
            and !inFollows(nt, token)
            and token != EOF_T) {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' "
-                         "(" + lex->GetTokenName(token) + ") "
-                         "found at beginning of " + funcName);
+        lex.ReportError("unexpected '" + lex.GetLexeme() + "' "
+                        "(" + lex.GetTokenName(token) + ") "
+                        "found at beginning of " + funcName);
         ++errors;
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
 
     return r;
@@ -119,10 +118,10 @@ void SyntacticalAnalyzer::Seek_Follow(const char * funcName,
 {
     while (!inFollows(nt, token)
            and token != EOF_T) {
-        lex->ReportError("unexpected '" + lex->GetLexeme() + "' found at "
-                         "end of " + funcName);
+        lex.ReportError("unexpected '" + lex.GetLexeme() + "' found at "
+                        "end of " + funcName);
         ++errors;
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
 }
 
@@ -182,7 +181,7 @@ int SyntacticalAnalyzer::Define()
 
     if (r != NoRule) {
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("'('");
@@ -190,7 +189,7 @@ int SyntacticalAnalyzer::Define()
     }
 
     if (token == DEFINE_T) {
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("'define'");
@@ -198,7 +197,7 @@ int SyntacticalAnalyzer::Define()
     }
 
     if (token == LPAREN_T) {
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("'('");
@@ -206,7 +205,7 @@ int SyntacticalAnalyzer::Define()
     }
 
     if (token == IDENT_T) {
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("an identifier");
@@ -216,7 +215,7 @@ int SyntacticalAnalyzer::Define()
     errors += Param_List();
 
     if (token == RPAREN_T) {
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("')'");
@@ -227,7 +226,7 @@ int SyntacticalAnalyzer::Define()
     errors += Stmt_List();
 
     if (token == RPAREN_T) {
-        token = lex->GetToken();
+        token = lex.GetToken();
     }
     else {
         Report_Missing("')'");
@@ -342,14 +341,14 @@ int SyntacticalAnalyzer::Stmt()
         break;
     case 8:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         break;
     case 9:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Action();
         if (token == RPAREN_T) {
-            token = lex->GetToken();
+            token = lex.GetToken();
         }
         else {
             Report_Missing("')'");
@@ -391,11 +390,11 @@ int SyntacticalAnalyzer::Literal()
     case 10:
     case 11:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         break;
     case 12:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Quoted_Lit();
         break;
     case NoRule:
@@ -504,7 +503,7 @@ int SyntacticalAnalyzer::Param_List()
     switch (r) {
     case 16:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Param_List();
         break;
     case 17:
@@ -582,7 +581,7 @@ int SyntacticalAnalyzer::Stmt_Pair()
     switch (r) {
     case 20:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt_Pair_Body();
         break;
     case 21:
@@ -625,7 +624,7 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
         errors += Stmt();
         errors += Stmt();
         if (token == RPAREN_T) {
-            token = lex->GetToken();
+            token = lex.GetToken();
         }
         else {
             Report_Missing("')'");
@@ -635,10 +634,10 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
         break;
     case 23:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt();
         if (token == RPAREN_T) {
-            token = lex->GetToken();
+            token = lex.GetToken();
         }
         else {
             Report_Missing("')'");
@@ -679,16 +678,16 @@ int SyntacticalAnalyzer::Action()
     switch (r) {
     case 24:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt();
         errors += Stmt();
         errors += Else_Part();
         break;
     case 25:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         if (token == LPAREN_T) {
-            token = lex->GetToken();
+            token = lex.GetToken();
         }
         else {
             Report_Missing("'('");
@@ -706,13 +705,13 @@ int SyntacticalAnalyzer::Action()
     case 36:
     case 48:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt();
         break;
     case 27:
     case 41:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt();
         errors += Stmt();
         break;
@@ -727,19 +726,19 @@ int SyntacticalAnalyzer::Action()
     case 46:
     case 47:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt_List();
         break;
     case 38:
     case 39:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Stmt();
         errors += Stmt_List();
         break;
     case 49:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         break;
     case NoRule:
         Report_Missing("something else"); // TODO: expected what?
@@ -776,10 +775,10 @@ int SyntacticalAnalyzer::Any_Other_Token()
     switch (r) {
     case 50:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += More_Tokens();
         if (token == RPAREN_T) {
-            token = lex->GetToken();
+            token = lex.GetToken();
         }
         else {
             Report_Missing("')'");
@@ -817,11 +816,11 @@ int SyntacticalAnalyzer::Any_Other_Token()
     case 80:
     case 81:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         break;
     case 79:
         Using_Rule(r);
-        token = lex->GetToken();
+        token = lex.GetToken();
         errors += Any_Other_Token();
         break;
     case NoRule:
