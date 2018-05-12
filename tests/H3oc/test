@@ -3,7 +3,7 @@
 base_head() {
     atf_set "descr" "${1}"
     atf_set "require.files" "$(atf_get_srcdir)/${1}"
-    atf_set "require.progs" "diff P2.out"
+    atf_set "require.progs" "diff P3.out"
 }
 base_body() {
     cp $(atf_get_srcdir)/${1} test.ss
