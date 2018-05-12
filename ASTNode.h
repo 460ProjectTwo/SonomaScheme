@@ -9,10 +9,10 @@
 class ASTNode
 {
  public:
-    using Ref = std::unique_ptr<ASTNode>;
+    using Ref = std::unique_ptr<ASTNode const>;
     virtual ~ASTNode() = default;
-    std::vector<Ref const> const & Children() const;
-    virtual void GenerateCode(CodeGenerator *) const = 0;
+    std::vector<Ref> const & Children() const;
+    virtual void GenerateCode(CodeGen *) const = 0;
 
  protected:
     std::vector<Ref> _children;

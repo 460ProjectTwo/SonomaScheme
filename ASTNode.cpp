@@ -2,7 +2,7 @@
 
 using namespace std;
 
-vector<Ref const> const& Children() const
+vector<ASTNode::Ref> const& ASTNode::Children() const
 {
     return _children;
 }
