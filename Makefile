@@ -1,35 +1,37 @@
-P2.out : Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
-	g++ -g -o P2.out Project2.o SetLimits.o LexicalAnalyzer.o SyntacticalAnalyzer.o
+CXXFLAGS = -g -std=c++14 -Wall -Werror -pedantic
 
-Project2.o : Project2.cpp SetLimits.h SyntacticalAnalyzer.h
-	g++ -g -c -std=c++11 Project2.cpp
+P3.out : Project3.o SetLimits.o LexicalAnalyzer.o CodeGenerator.o SyntacticalAnalyzer.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+Project3.o : Project3.cpp SetLimits.h SyntacticalAnalyzer.h
+	$(CXX) $(CXXFLAGS) -c $<
 
 SetLimits.o : SetLimits.cpp SetLimits.h
-	g++ -g -c -std=c++11 SetLimits.cpp
+	$(CXX) -g -c $<
 
 LexicalAnalyzer.o : LexicalAnalyzer.cpp LexicalAnalyzer.h
-	g++ -g -c -std=c++11 LexicalAnalyzer.cpp
+	$(CXX) $(CXXFLAGS) -c $<
 
 SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h firsts.hpp follows.hpp
-	g++ -g -c -std=c++11 SyntacticalAnalyzer.cpp
+	$(CXX) $(CXXFLAGS) -c $<
 
 firsts.hpp follows.hpp: tablegen.py
 	python3 tablegen.py
 
 clean :
-	rm -rf *.o P2.out *.gch
+	rm -rf *.o P3.out *.gch
 
-test : P2.out
+test : P3.out
 	mypy tablegen.py
 	. ./test-env && kyua test
 
 submit : test do-submit
 
-do-submit : Project2.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp tablegen.py firsts.hpp follows.hpp Makefile README.txt
-	rm -rf TeamSP2
-	mkdir TeamSP2
-	cp $^ TeamSP2
-	tar cfvz TeamSP2.tgz TeamSP2
-	cp TeamSP2.tgz ~tiawatts/cs460drop
+do-submit : Project3.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyzer.h SyntacticalAnalyzer.cpp tablegen.py firsts.hpp follows.hpp Makefile README.txt
+	rm -rf TeamSP3
+	mkdir TeamSP3
+	cp $^ TeamSP3
+	tar cfvz TeamSP3.tgz TeamSP3
+	cp TeamSP3.tgz ~tiawatts/cs460drop
 
 .PHONY: clean test submit do-submit
