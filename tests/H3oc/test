@@ -7,7 +7,7 @@ base_head() {
 }
 base_body() {
     cp $(atf_get_srcdir)/${1} test.ss
-    atf_check -o ignore -e ignore P2.out test.ss
+    atf_check -o ignore -e ignore P3.out test.ss
     atf_check diff -wu $(atf_get_srcdir)/${1%%.ss}.p2 test.p2
 }
 base_cleanup() {

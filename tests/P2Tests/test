@@ -23,10 +23,10 @@ do
     eval "${name}_head() {
         atf_set descr ${file}
         atf_set require.files ${path}
-        atf_set require.progs P2.out
+        atf_set require.progs P3.out
     }
     ${name}_body() {
-        atf_check -o ${action}:'^0 errors' P2.out ${path}
+        atf_check -o ${action}:'^0 errors' P3.out ${path}
     }"
 
     tests="${tests} ${name}"
