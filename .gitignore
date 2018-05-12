@@ -5,3 +5,5 @@
 *.p2
 P3.out
 tests/*/*.cpp
+.mypy_cache/
+__pycache__/
