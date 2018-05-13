@@ -2,7 +2,7 @@ from functools import lru_cache, wraps
 
 Rule = int
 Token = str
-NoRule: Rule = 0
+NoRule = 0
 
 # NOTE: All checks must be defined in the correct non-terminal rule order!
 
