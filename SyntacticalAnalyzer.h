@@ -41,7 +41,7 @@ class SyntacticalAnalyzer
     int Program();
     int Define();
     int More_Defines();
-    int Stmt_List();
+    int Stmt_List(std::string);
     int Stmt();
     int Literal();
     int Quoted_Lit();

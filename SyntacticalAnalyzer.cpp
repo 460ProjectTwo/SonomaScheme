@@ -177,6 +177,8 @@ int SyntacticalAnalyzer::Define()
 
     Function_Entry(__func__);
 
+    gen.WriteCode(0, "Object\n"); // Return type
+
     rule const r = Seek_First_Or_Follow(__func__, ntDefine, errors);
 
     if (r != NoRule) {
@@ -205,6 +207,7 @@ int SyntacticalAnalyzer::Define()
     }
 
     if (token == IDENT_T) {
+        gen.WriteCode(0, lex.GetLexeme()); // Function name
         token = lex.GetToken();
     }
     else {
@@ -212,7 +215,11 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
+    gen.WriteCode(0, "(\n");
+
     errors += Param_List();
+
+    gen.WriteCode(0, " )\n");
 
     if (token == RPAREN_T) {
         token = lex.GetToken();
@@ -222,8 +229,15 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
+    gen.WriteCode(0, "{\n");
+
     errors += Stmt();
-    errors += Stmt_List();
+
+    gen.WriteCode(0, ";\n");
+
+    errors += Stmt_List(";\n");
+
+    gen.WriteCode(0, "}\n\n");
 
     if (token == RPAREN_T) {
         token = lex.GetToken();
@@ -286,7 +300,7 @@ int SyntacticalAnalyzer::More_Defines()
 * Return value: integer representing the number of errors                      *
 * Description: This function will call stmt or can do nothing                  *
 *******************************************************************************/
-int SyntacticalAnalyzer::Stmt_List()
+int SyntacticalAnalyzer::Stmt_List(std::string separator)
 {
     int errors = 0;
 
@@ -298,7 +312,8 @@ int SyntacticalAnalyzer::Stmt_List()
     case 5:
         Using_Rule(r);
         errors += Stmt();
-        errors += Stmt_List();
+        gen.WriteCode(0, separator);
+        errors += Stmt_List(separator);
         break;
     case 6:
         Using_Rule(r);
@@ -503,11 +518,13 @@ int SyntacticalAnalyzer::Param_List()
     switch (r) {
     case 16:
         Using_Rule(r);
+        gen.WriteCode(1, "Object " + lex.GetLexeme() + ",\n");
         token = lex.GetToken();
         errors += Param_List();
         break;
     case 17:
         Using_Rule(r);
+        gen.WriteCode(1, "...");
         break;
     case NoRule:
         Report_Missing("an identifier or ')'"); // TODO: verify expected
@@ -680,7 +697,9 @@ int SyntacticalAnalyzer::Action()
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt();
+        gen.WriteCode(0, " ? ");
         errors += Stmt();
+        gen.WriteCode(0, " : ");
         errors += Else_Part();
         break;
     case 25:
@@ -727,14 +746,14 @@ int SyntacticalAnalyzer::Action()
     case 47:
         Using_Rule(r);
         token = lex.GetToken();
-        errors += Stmt_List();
+        errors += Stmt_List(", ");
         break;
     case 38:
     case 39:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt();
-        errors += Stmt_List();
+        errors += Stmt_List(", ");
         break;
     case 49:
         Using_Rule(r);
