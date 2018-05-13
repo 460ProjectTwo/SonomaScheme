@@ -880,9 +880,11 @@ int SyntacticalAnalyzer::Any_Other_Token()
     //Rule for: <any_other_token> -> LPAREN_T <more_tokens> RPAREN_T
     case 50:
         Using_Rule(r);
+        gen.WriteCode(0, "Object(\"" + lex.GetLexeme());
         token = lex.GetToken();
         errors += More_Tokens();
         if (token == RPAREN_T) {
+            gen.WriteCode(0, " " + lex.GetLexeme() + "\")");
             token = lex.GetToken();
         }
         else {
@@ -951,6 +953,7 @@ int SyntacticalAnalyzer::Any_Other_Token()
     //Rule for: <any_other_token> -> ELSE_T
     case 81:
         Using_Rule(r);
+        gen.WriteCode(0, " " + lex.GetLexeme());
         token = lex.GetToken();
         break;
     //Rule for: <any_other_token> -> QUOTE_T <any_other_token>
