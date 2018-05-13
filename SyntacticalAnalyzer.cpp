@@ -174,10 +174,10 @@ int SyntacticalAnalyzer::Program()
 int SyntacticalAnalyzer::Define()
 {
     int errors = 0;
+    bool isMain = 0;
 
     Function_Entry(__func__);
 
-    gen.WriteCode(0, "Object\n"); // Return type
 
     rule const r = Seek_First_Or_Follow(__func__, ntDefine, errors);
 
@@ -207,6 +207,11 @@ int SyntacticalAnalyzer::Define()
     }
 
     if (token == IDENT_T) {
+        isMain = lex.GetLexeme() == "main";
+        if ( isMain )
+            gen.WriteCode(0, "int\n"); // Return type
+        else
+            gen.WriteCode(0, "Object\n"); // Return type
         gen.WriteCode(0, lex.GetLexeme()); // Function name
         token = lex.GetToken();
     }
@@ -237,7 +242,10 @@ int SyntacticalAnalyzer::Define()
 
     errors += Stmt_List(";\n");
 
-    gen.WriteCode(0, "}\n\n");
+    if (isMain)
+        gen.WriteCode(0, ";\n\treturn 0");
+
+    gen.WriteCode(0, ";\n}\n\n");
 
     if (token == RPAREN_T) {
         token = lex.GetToken();
@@ -300,7 +308,7 @@ int SyntacticalAnalyzer::More_Defines()
 * Return value: integer representing the number of errors                      *
 * Description: This function will call stmt or can do nothing                  *
 *******************************************************************************/
-int SyntacticalAnalyzer::Stmt_List(std::string separator)
+int SyntacticalAnalyzer::Stmt_List(std::string separator, bool tail)
 {
     int errors = 0;
 
@@ -311,9 +319,11 @@ int SyntacticalAnalyzer::Stmt_List(std::string separator)
     switch (r) {
     case 5:
         Using_Rule(r);
+        if(tail)
+            gen.WriteCode(0, separator);
+
         errors += Stmt();
-        gen.WriteCode(0, separator);
-        errors += Stmt_List(separator);
+        errors += Stmt_List(separator, true );
         break;
     case 6:
         Using_Rule(r);
@@ -356,6 +366,7 @@ int SyntacticalAnalyzer::Stmt()
         break;
     case 8:
         Using_Rule(r);
+        gen.WriteCode(0, lex.GetLexeme() );
         token = lex.GetToken();
         break;
     case 9:
@@ -405,6 +416,7 @@ int SyntacticalAnalyzer::Literal()
     case 10:
     case 11:
         Using_Rule(r);
+        gen.WriteCode(0, "Object(" + lex.GetLexeme() + ")" );
         token = lex.GetToken();
         break;
     case 12:
@@ -722,8 +734,13 @@ int SyntacticalAnalyzer::Action()
     case 34:
     case 35:
     case 36:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt();
+        break;
     case 48:
         Using_Rule(r);
+        gen.WriteCode(1, "cout << " );
         token = lex.GetToken();
         errors += Stmt();
         break;
@@ -734,9 +751,14 @@ int SyntacticalAnalyzer::Action()
         errors += Stmt();
         errors += Stmt();
         break;
+
+    case 37:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" + ");
+        break;
     case 28:
     case 29:
-    case 37:
     case 40:
     case 42:
     case 43:
@@ -757,6 +779,7 @@ int SyntacticalAnalyzer::Action()
         break;
     case 49:
         Using_Rule(r);
+        gen.WriteCode(1, "cout << endl" );
         token = lex.GetToken();
         break;
     case NoRule:

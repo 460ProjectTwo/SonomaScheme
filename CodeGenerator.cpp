@@ -21,15 +21,6 @@ CodeGen::CodeGen (string filename, LexicalAnalyzer * L)
 /********************************************************************************/
 CodeGen::~CodeGen ()
 {
-    cpp << "int main()\n"
-        << "{\n"
-        << "\tObject result = main();\n"
-        << "\tstringstream s;\n"
-        << "\ts << result;\n"
-        << "\tint status;\n"
-        << "\ts >> status;\n"
-        << "\treturn status;\n"
-        << "}\n";
     cpp.close();
 }
 
