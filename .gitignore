@@ -5,5 +5,7 @@
 *.p2
 P3.out
 tests/*/*.cpp
+tests/CodeGen/test.out
 .mypy_cache/
 __pycache__/
+.vscode/settings.json
