@@ -178,7 +178,6 @@ int SyntacticalAnalyzer::Define()
 
     Function_Entry(__func__);
 
-
     rule const r = Seek_First_Or_Follow(__func__, ntDefine, errors);
 
     if (r != NoRule) {
@@ -234,16 +233,16 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
-    gen.WriteCode(0, "{\n");
+    gen.WriteCode(0, "{\n\tObject $result$;\n\t$result$ = ");
 
     errors += Stmt();
 
-    gen.WriteCode(0, ";\n");
-
-    errors += Stmt_List(";\n");
+    errors += Stmt_List(";\n\t$result$ = ", false);
 
     if (isMain)
         gen.WriteCode(0, ";\n\treturn 0");
+    else
+        gen.WriteCode(0, ";\n\treturn $result$");
 
     gen.WriteCode(0, ";\n}\n\n");
 
@@ -310,7 +309,7 @@ int SyntacticalAnalyzer::More_Defines()
 * Return value: integer representing the number of errors                      *
 * Description: This function will call stmt or can do nothing                  *
 *******************************************************************************/
-int SyntacticalAnalyzer::Stmt_List(std::string separator, bool tail)
+int SyntacticalAnalyzer::Stmt_List(std::string separator, bool initial)
 {
     int errors = 0;
 
@@ -322,11 +321,10 @@ int SyntacticalAnalyzer::Stmt_List(std::string separator, bool tail)
     //Rule for: <stmt_list> -> <stmt> <stmt_list>
     case 5:
         Using_Rule(r);
-        if(tail)
+        if (not initial)
             gen.WriteCode(0, separator);
-
         errors += Stmt();
-        errors += Stmt_List(separator, true );
+        errors += Stmt_List(separator, false);
         break;
     //Rule for: <stmt_list> -> lambda
     case 6:
@@ -531,7 +529,7 @@ int SyntacticalAnalyzer::More_Tokens()
 * Description: This function will check for IDENT_T then call itself           *
 * or it will do nothing                                                        *
 *******************************************************************************/
-int SyntacticalAnalyzer::Param_List()
+int SyntacticalAnalyzer::Param_List(bool initial)
 {
     int errors = 0;
 
@@ -543,14 +541,15 @@ int SyntacticalAnalyzer::Param_List()
     //Rule for: <param_list> -> IDENT_T <param_list<
     case 16:
         Using_Rule(r);
-        gen.WriteCode(1, "Object " + lex.GetLexeme() + ",\n");
+        if (not initial)
+            gen.WriteCode(0, ",\n");
+        gen.WriteCode(1, "Object " + lex.GetLexeme());
         token = lex.GetToken();
-        errors += Param_List();
+        errors += Param_List(false);
         break;
     //Rule for: <param_list> -> lambda
     case 17:
         Using_Rule(r);
-        gen.WriteCode(1, "...");
         break;
     case NoRule:
         Report_Missing("an identifier or ')'"); // TODO: verify expected
@@ -777,7 +776,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> DISPLAY_T <stmt>
     case 48:
         Using_Rule(r);
-        gen.WriteCode(1, "cout << " );
+        gen.WriteCode(0, "$result$; cout << " );
         token = lex.GetToken();
         errors += Stmt();
         break;
@@ -841,7 +840,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> NEWLINE_T
     case 49:
         Using_Rule(r);
-        gen.WriteCode(1, "cout << endl" );
+        gen.WriteCode(0, "$result$; cout << endl" );
         token = lex.GetToken();
         break;
     case NoRule:

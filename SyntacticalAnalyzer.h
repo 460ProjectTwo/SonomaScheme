@@ -41,12 +41,12 @@ class SyntacticalAnalyzer
     int Program();
     int Define();
     int More_Defines();
-    int Stmt_List(std::string, bool b=false);
+    int Stmt_List(std::string separator, bool initial = true);
     int Stmt();
     int Literal();
     int Quoted_Lit();
     int More_Tokens();
-    int Param_List();
+    int Param_List(bool initial = true);
     int Else_Part();
     int Stmt_Pair();
     int Stmt_Pair_Body();
