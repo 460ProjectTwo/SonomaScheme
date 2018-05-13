@@ -54,7 +54,7 @@ class LexicalAnalyzer
 	ofstream p1file;
 	string line;
 	int linenum;
-	int pos;
+	unsigned pos;
 	string lexeme;
 	int error_type;
 	int errors;

@@ -196,7 +196,7 @@ token_type LexicalAnalyzer::GetToken ()
 			c = 'b';
 		else if (isdigit(c))
 			c = '0';
-		int col = 0;
+		unsigned col = 0;
 		while (col < valid.length() && valid[col] != c)
 			col++;
 		state = table[state][col];
