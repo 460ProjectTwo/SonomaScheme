@@ -278,11 +278,13 @@ int SyntacticalAnalyzer::More_Defines()
     rule const r = Seek_First_Or_Follow(__func__, ntMore_Defines, errors);
 
     switch (r) {
+    //Rule for: <more_defines> -> <define> <more_defines>
     case 3:
         Using_Rule(r);
         errors += Define();
         errors += More_Defines();
         break;
+    //Rule for: <more_defines> -> lambda
     case 4:
         Using_Rule(r);
         break;
@@ -317,6 +319,7 @@ int SyntacticalAnalyzer::Stmt_List(std::string separator, bool tail)
     rule const r = Seek_First_Or_Follow(__func__, ntStmt_List, errors);
 
     switch (r) {
+    //Rule for: <stmt_list> -> <stmt> <stmt_list>
     case 5:
         Using_Rule(r);
         if(tail)
@@ -325,6 +328,7 @@ int SyntacticalAnalyzer::Stmt_List(std::string separator, bool tail)
         errors += Stmt();
         errors += Stmt_List(separator, true );
         break;
+    //Rule for: <stmt_list> -> lambda
     case 6:
         Using_Rule(r);
         break;
@@ -360,15 +364,18 @@ int SyntacticalAnalyzer::Stmt()
     rule const r = Seek_First_Or_Follow(__func__, ntStmt, errors);
 
     switch (r) {
+    //Rule for: <stmt> -> <literal>
     case 7:
         Using_Rule(r);
         errors += Literal();
         break;
+    //Rule for: <stmt> -> IDENT_T
     case 8:
         Using_Rule(r);
         gen.WriteCode(0, lex.GetLexeme() );
         token = lex.GetToken();
         break;
+    //Rule for: <stmt> -> LPAREN_T <action> RPAREN_T
     case 9:
         Using_Rule(r);
         token = lex.GetToken();
@@ -413,12 +420,15 @@ int SyntacticalAnalyzer::Literal()
     rule const r = Seek_First_Or_Follow(__func__, ntLiteral, errors);
 
     switch (r) {
+    //Rule for: <literal> -> NUMLIT_T
     case 10:
+    //Rule for: <literal> -> STRLIT_T
     case 11:
         Using_Rule(r);
         gen.WriteCode(0, "Object(" + lex.GetLexeme() + ")" );
         token = lex.GetToken();
         break;
+    //Rule for: <literal> -> QUOTE_T <quoted_lit>
     case 12:
         Using_Rule(r);
         token = lex.GetToken();
@@ -488,11 +498,13 @@ int SyntacticalAnalyzer::More_Tokens()
     rule const r = Seek_First_Or_Follow(__func__, ntMore_Tokens, errors);
 
     switch (r) {
+    //Rule for: <more_tokens> -> <any_other_token> <more_tokens>
     case 14:
         Using_Rule(r);
         errors += Any_Other_Token();
         errors += More_Tokens();
         break;
+    //Rule for: <more_tokens> -> lambda
     case 15:
         Using_Rule(r);
         break;
@@ -528,12 +540,14 @@ int SyntacticalAnalyzer::Param_List()
     rule const r = Seek_First_Or_Follow(__func__, ntParam_List, errors);
 
     switch (r) {
+    //Rule for: <param_list> -> IDENT_T <param_list<
     case 16:
         Using_Rule(r);
         gen.WriteCode(1, "Object " + lex.GetLexeme() + ",\n");
         token = lex.GetToken();
         errors += Param_List();
         break;
+    //Rule for: <param_list> -> lambda
     case 17:
         Using_Rule(r);
         gen.WriteCode(1, "...");
@@ -569,10 +583,12 @@ int SyntacticalAnalyzer::Else_Part()
     rule const r = Seek_First_Or_Follow(__func__, ntElse_Part, errors);
 
     switch (r) {
+    //Rule for: <else_part> -> <stmt>
     case 18:
         Using_Rule(r);
         errors += Stmt();
         break;
+    //Rule for: <else_part> -> lambda
     case 19:
         Using_Rule(r);
         break;
@@ -608,11 +624,13 @@ int SyntacticalAnalyzer::Stmt_Pair()
     rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair, errors);
 
     switch (r) {
+    //Rule for: <stmt_pair> -> LPAREN_T <stmt_pair_body>
     case 20:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt_Pair_Body();
         break;
+    //Rule for: <stmt_pair> -> lambda
     case 21:
         Using_Rule(r);
         break;
@@ -648,6 +666,7 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
     rule const r = Seek_First_Or_Follow(__func__, ntStmt_Pair_Body, errors);
 
     switch (r) {
+    //Rule for: <stmt_pair_body> -> <stmt> <stmt> RPAREN_T <stmt_pair>
     case 22:
         Using_Rule(r);
         errors += Stmt();
@@ -661,6 +680,7 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
         }
         errors += Stmt_Pair();
         break;
+    //Rule for: <stmt_pair_body> -> ELSE_T <stmt> RPAREN_T
     case 23:
         Using_Rule(r);
         token = lex.GetToken();
@@ -705,6 +725,7 @@ int SyntacticalAnalyzer::Action()
     rule const r = Seek_First_Or_Follow(__func__, ntAction, errors);
 
     switch (r) {
+    //Rule for: <action> -> IF_T <stmt> <stmt> <else_part>
     case 24:
         Using_Rule(r);
         token = lex.GetToken();
@@ -714,6 +735,7 @@ int SyntacticalAnalyzer::Action()
         gen.WriteCode(0, " : ");
         errors += Else_Part();
         break;
+    //Rule for: <action> -> COND_T LPAREN_T <stmt_pair_body>
     case 25:
         Using_Rule(r);
         token = lex.GetToken();
@@ -726,25 +748,36 @@ int SyntacticalAnalyzer::Action()
         }
         errors += Stmt_Pair_Body();
         break;
+    //Rule for: <action> -> LISTOP_T <stmt>
     case 26:
+    //Rule for: <action> -> NOT_T <stmt>
     case 30:
+    //Rule for: <action> -> NUMBERP_T <stmt>
     case 31:
+    //Rule for: <action> -> SYMBOLP_T <stmt>
     case 32:
+    //Rule for: <action> -> LISTP_T <stmt>
     case 33:
+    //Rule for: <action> -> ZEROP_T <stmt>
     case 34:
+    //Rule for: <action> -> NULLP_T <stmt>
     case 35:
+    //Rule for: <action> -> STRINGP_T <stmt>
     case 36:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt();
         break;
+    //Rule for: <action> -> DISPLAY_T <stmt>
     case 48:
         Using_Rule(r);
         gen.WriteCode(1, "cout << " );
         token = lex.GetToken();
         errors += Stmt();
         break;
+    //Rule for: <action> -> CONS_T <stmt> <stmt>
     case 27:
+    //Rule for: <action> -> MODULO_T <stmt> <stmt>
     case 41:
         Using_Rule(r);
         token = lex.GetToken();
@@ -752,31 +785,44 @@ int SyntacticalAnalyzer::Action()
         errors += Stmt();
         break;
 
+    //Rule for: <action> -> PLUS_T <stmt_list>
     case 37:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt_List(" + ");
         break;
+    //Rule for: <action> -> AND_T <stmt_list>
     case 28:
+    //Rule for: <action> -> OR_T <stmt_list>
     case 29:
+    //Rule for: <action> -> MULT_T <stmt_list>
     case 40:
+    //Rule for: <action> -> EQUALTO_T <stmt_list>
     case 42:
+    //Rule for: <action> -> GT_T <stmt_list>
     case 43:
+    //Rule for: <action> -> LT_T <stmt_list>
     case 44:
+    //Rule for: <action> -> GTE_T <stmt_list>
     case 45:
+    //Rule for: <action> -> LTE_T <stmt_list>
     case 46:
+    //Rule for: <action> -> IDENT_T <stmt_list>
     case 47:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt_List(", ");
         break;
+    //Rule for: <action> -> MINUS_T <stmt> <stmt_list>
     case 38:
+    //Rule for: <action> -> DIV_T <stmt> <stmt_list>
     case 39:
         Using_Rule(r);
         token = lex.GetToken();
         errors += Stmt();
         errors += Stmt_List(", ");
         break;
+    //Rule for: <action> -> NEWLINE_T
     case 49:
         Using_Rule(r);
         gen.WriteCode(1, "cout << endl" );
@@ -815,6 +861,7 @@ int SyntacticalAnalyzer::Any_Other_Token()
     rule const r = Seek_First_Or_Follow(__func__, ntAny_Other_Token, errors);
 
     switch (r) {
+    //Rule for: <any_other_token> -> LPAREN_T <more_tokens> RPAREN_T
     case 50:
         Using_Rule(r);
         token = lex.GetToken();
@@ -827,39 +874,70 @@ int SyntacticalAnalyzer::Any_Other_Token()
             ++errors;
         }
         break;
+    //Rule for: <any_other_token> -> IDENT_T
     case 51:
+    //Rule for: <any_other_token> -> NUMLIT_T
     case 52:
+    //Rule for: <any_other_token> -> STRLIT_T
     case 53:
+    //Rule for: <any_other_token> -> CONS_T
     case 54:
+    //Rule for: <any_other_token> -> IF_T
     case 55:
+    //Rule for: <any_other_token> -> DISPLAY_T
     case 56:
+    //Rule for: <any_other_token> -> NEWLINE_T
     case 57:
+    //Rule for: <any_other_token> -> LISTOP_T
     case 58:
+    //Rule for: <any_other_token> -> AND_T
     case 59:
+    //Rule for: <any_other_token> -> OR_T
     case 60:
+    //Rule for: <any_other_token> -> NOT_T
     case 61:
+    //Rule for: <any_other_token> -> DEFINE_T
     case 62:
+    //Rule for: <any_other_token> -> NUMBERP_T
     case 63:
+    //Rule for: <any_other_token> -> SYMBOLP_T
     case 64:
+    //Rule for: <any_other_token> -> LISTP_T
     case 65:
+    //Rule for: <any_other_token> -> ZEROP_T
     case 66:
+    //Rule for: <any_other_token> -> NULLP_T
     case 67:
+    //Rule for: <any_other_token> -> STRINGP_T
     case 68:
+    //Rule for: <any_other_token> -> PLUS_T
     case 69:
+    //Rule for: <any_other_token> -> MINUS_T
     case 70:
+    //Rule for: <any_other_token> -> DIV_T
     case 71:
+    //Rule for: <any_other_token> -> MULT_T
     case 72:
+    //Rule for: <any_other_token> -> MODULO_T
     case 73:
+    //Rule for: <any_other_token> -> EQUALTO_T
     case 74:
+    //Rule for: <any_other_token> -> GT_T
     case 75:
+    //Rule for: <any_other_token> -> LT_T
     case 76:
+    //Rule for: <any_other_token> -> GTE_T
     case 77:
+    //Rule for: <any_other_token> -> LTE_T
     case 78:
+    //Rule for: <any_other_token> -> COND_T
     case 80:
+    //Rule for: <any_other_token> -> ELSE_T
     case 81:
         Using_Rule(r);
         token = lex.GetToken();
         break;
+    //Rule for: <any_other_token> -> QUOTE_T <any_other_token>
     case 79:
         Using_Rule(r);
         token = lex.GetToken();
