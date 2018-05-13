@@ -750,6 +750,12 @@ int SyntacticalAnalyzer::Action()
         break;
     //Rule for: <action> -> LISTOP_T <stmt>
     case 26:
+        Using_Rule(r);
+        gen.WriteCode(0, "listop(\""+ lex.GetLexeme() + "\", " );
+        token = lex.GetToken();
+        errors += Stmt();
+        gen.WriteCode(0, ")");
+        break;
     //Rule for: <action> -> NOT_T <stmt>
     case 30:
     //Rule for: <action> -> NUMBERP_T <stmt>
@@ -777,6 +783,14 @@ int SyntacticalAnalyzer::Action()
         break;
     //Rule for: <action> -> CONS_T <stmt> <stmt>
     case 27:
+        Using_Rule(r);
+        gen.WriteCode(0, "cons(" );
+        token = lex.GetToken();
+        errors += Stmt();
+        gen.WriteCode(0, " , ");
+        errors += Stmt();
+        gen.WriteCode(0, ")" );
+        break;
     //Rule for: <action> -> MODULO_T <stmt> <stmt>
     case 41:
         Using_Rule(r);
@@ -810,8 +824,10 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> IDENT_T <stmt_list>
     case 47:
         Using_Rule(r);
+        gen.WriteCode(0, lex.GetLexeme() + "(");
         token = lex.GetToken();
         errors += Stmt_List(", ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> MINUS_T <stmt> <stmt_list>
     case 38:
