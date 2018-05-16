@@ -728,11 +728,13 @@ int SyntacticalAnalyzer::Action()
     case 24:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "((");
         errors += Stmt();
-        gen.WriteCode(0, " ? ");
+        gen.WriteCode(0, ") ? (");
         errors += Stmt();
-        gen.WriteCode(0, " : ");
+        gen.WriteCode(0, ") : (");
         errors += Else_Part();
+        gen.WriteCode(0, "))");
         break;
     //Rule for: <action> -> COND_T LPAREN_T <stmt_pair_body>
     case 25:
