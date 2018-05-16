@@ -233,16 +233,16 @@ int SyntacticalAnalyzer::Define()
         ++errors;
     }
 
-    gen.WriteCode(0, "{\n\tObject $result$;\n\t$result$ = ");
+    gen.WriteCode(0, "{\n\tObject __result;\n\t__result = ");
 
     errors += Stmt();
 
-    errors += Stmt_List(";\n\t$result$ = ", false);
+    errors += Stmt_List(";\n\t__result = ", false);
 
     if (isMain)
         gen.WriteCode(0, ";\n\treturn 0");
     else
-        gen.WriteCode(0, ";\n\treturn $result$");
+        gen.WriteCode(0, ";\n\treturn __result");
 
     gen.WriteCode(0, ";\n}\n\n");
 
@@ -776,7 +776,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> DISPLAY_T <stmt>
     case 48:
         Using_Rule(r);
-        gen.WriteCode(0, "$result$; cout << " );
+        gen.WriteCode(0, "__result; cout << " );
         token = lex.GetToken();
         errors += Stmt();
         break;
@@ -797,7 +797,6 @@ int SyntacticalAnalyzer::Action()
         errors += Stmt();
         errors += Stmt();
         break;
-
     //Rule for: <action> -> PLUS_T <stmt_list>
     case 37:
         Using_Rule(r);
@@ -840,7 +839,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> NEWLINE_T
     case 49:
         Using_Rule(r);
-        gen.WriteCode(0, "$result$; cout << endl" );
+        gen.WriteCode(0, "__result; cout << endl" );
         token = lex.GetToken();
         break;
     case NoRule:
