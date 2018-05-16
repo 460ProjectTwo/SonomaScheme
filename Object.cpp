@@ -39,7 +39,7 @@ Object::Object (const string & value)
 		if (isdigit (value[i]))
 			num++;
 		else if (value[i] == '.')
-			dp++; 
+			dp++;
 	if (sgn + num + dp == value.size())
 		if (dp == 0)
 			*this = Object (atoi (value.c_str()));
@@ -311,6 +311,11 @@ bool Object::operator >= (const Object & O) const
 	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
 	exit (1);
     }
+}
+
+Object::operator bool () const
+{
+	return true;
 }
 
 Object Object::operator + (const Object & O) const

@@ -23,6 +23,7 @@ class Object
 	bool operator <= (const Object & O) const;
 	bool operator > (const Object & O) const;
 	bool operator >= (const Object & O) const;
+	operator bool () const;
 	Object operator + (const Object & O) const;
 	Object operator - (const Object & O) const;
 	Object operator * (const Object & O) const;
