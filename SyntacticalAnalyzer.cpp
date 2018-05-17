@@ -817,62 +817,83 @@ int SyntacticalAnalyzer::Action()
     case 41:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt();
+        gen.WriteCode(0, "  % ");
         errors += Stmt();
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> PLUS_T <stmt_list>
     case 37:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" + ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> AND_T <stmt_list>
     case 28:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" && ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> OR_T <stmt_list>
     case 29:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" || ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> MULT_T <stmt_list>
     case 40:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" * ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> EQUALTO_T <stmt_list>
     case 42:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" == ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> GT_T <stmt_list>
     case 43:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" > ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> LT_T <stmt_list>
     case 44:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" < ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> GTE_T <stmt_list>
     case 45:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" >= ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> LTE_T <stmt_list>
     case 46:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt_List(" <= ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> IDENT_T <stmt_list>
     case 47:
@@ -884,12 +905,23 @@ int SyntacticalAnalyzer::Action()
         break;
     //Rule for: <action> -> MINUS_T <stmt> <stmt_list>
     case 38:
+        Using_Rule(r);
+        token = lex.GetToken();
+        gen.WriteCode(0, "(");
+        errors += Stmt();
+        gen.WriteCode(0, " - ");
+        errors += Stmt_List(" - ");
+        gen.WriteCode(0, ")");
+        break;
     //Rule for: <action> -> DIV_T <stmt> <stmt_list>
     case 39:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(");
         errors += Stmt();
-        errors += Stmt_List(", ");
+        gen.WriteCode(0, " / ");
+        errors += Stmt_List(" / ");
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> NEWLINE_T
     case 49:
