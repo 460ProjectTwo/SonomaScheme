@@ -759,6 +759,10 @@ int SyntacticalAnalyzer::Action()
         break;
     //Rule for: <action> -> NOT_T <stmt>
     case 30:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt();
+        break;
     //Rule for: <action> -> NUMBERP_T <stmt>
     case 31:
     //Rule for: <action> -> SYMBOLP_T <stmt>
@@ -772,8 +776,14 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> STRINGP_T <stmt>
     case 36:
         Using_Rule(r);
+        {
+            string p = lex.GetLexeme();
+            p[p.length()-1] = 'p';
+            gen.WriteCode(0, p + '(');
+        }
         token = lex.GetToken();
         errors += Stmt();
+        gen.WriteCode(0, ")");
         break;
     //Rule for: <action> -> DISPLAY_T <stmt>
     case 48:
