@@ -23,7 +23,7 @@ clean :
 
 test : P3.out
 	mypy tablegen.py
-	. ./test-env && kyua test
+	. ./_test-env && kyua test
 
 submit : test do-submit
 
