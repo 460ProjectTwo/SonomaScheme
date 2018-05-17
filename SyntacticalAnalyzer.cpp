@@ -499,7 +499,7 @@ int SyntacticalAnalyzer::More_Tokens()
     //Rule for: <more_tokens> -> <any_other_token> <more_tokens>
     case 14:
         Using_Rule(r);
-        errors += Any_Other_Token();
+        errors += Any_Other_Token(false);
         errors += More_Tokens();
         break;
     //Rule for: <more_tokens> -> lambda
@@ -878,7 +878,7 @@ int SyntacticalAnalyzer::Action()
 * if token is LPAREN_T more tokens is call followed by a check for RPAREN_T    *
 * if QUOTE_T is found the function calls itself                                *
 *******************************************************************************/
-int SyntacticalAnalyzer::Any_Other_Token()
+int SyntacticalAnalyzer::Any_Other_Token(bool objectify)
 {
     int errors = 0;
 
@@ -890,11 +890,15 @@ int SyntacticalAnalyzer::Any_Other_Token()
     //Rule for: <any_other_token> -> LPAREN_T <more_tokens> RPAREN_T
     case 50:
         Using_Rule(r);
-        gen.WriteCode(0, "Object(\"" + lex.GetLexeme());
+        if (objectify)
+            gen.WriteCode(0, "Object(\"");
+        gen.WriteCode(0, "(");
         token = lex.GetToken();
         errors += More_Tokens();
         if (token == RPAREN_T) {
-            gen.WriteCode(0, " " + lex.GetLexeme() + "\")");
+            gen.WriteCode(0, " )");
+            if (objectify)
+                gen.WriteCode(0, "\")");
             token = lex.GetToken();
         }
         else {
@@ -963,7 +967,10 @@ int SyntacticalAnalyzer::Any_Other_Token()
     //Rule for: <any_other_token> -> ELSE_T
     case 81:
         Using_Rule(r);
-        gen.WriteCode(0, " " + lex.GetLexeme());
+        gen.WriteCode(0, objectify ? "Object(\"" : " ");
+        gen.WriteCode(0, lex.GetLexeme());
+        if (objectify)
+            gen.WriteCode(0, "\", true)");
         token = lex.GetToken();
         break;
     //Rule for: <any_other_token> -> QUOTE_T <any_other_token>

@@ -5,7 +5,7 @@
 #define DEBUG 0
 #define debug if (DEBUG) cout
 
-string nameof [] = {"unknown", "integer", "real", "string", "list"};
+string nameof [] = {"unknown", "integer", "real", "string", "list", "symbol"};
 
 Object::Object()
 {
@@ -29,7 +29,7 @@ Object::Object (const double & value)
 	MakeName ();
 }
 
-Object::Object (const string & value)
+Object::Object (const string & value, bool symbol)
 {
 	type = NONE;
 	int sgn = 0, num = 0, dp = 0;
@@ -52,7 +52,7 @@ Object::Object (const string & value)
 		i++;
 	if (value[i] != '(')
 	{
-		type = STRING;
+		type = symbol ? SYMBOL : STRING;
 		strval = value;
 		intval = realval = 0;
 		MakeName ();
@@ -94,6 +94,12 @@ bool Object::operator == (const Object & O) const
 	if (type == STRING)
 	{
 		if (O.type == STRING)
+			return strval == O.strval;
+		throw "";
+	}
+	if (type == SYMBOL)
+	{
+		if (O.type == SYMBOL)
 			return strval == O.strval;
 		throw "";
 	}
@@ -143,6 +149,12 @@ bool Object::operator != (const Object & O) const
 	if (type == STRING)
 	{
 		if (O.type == STRING)
+			return strval != O.strval;
+		throw "";
+	}
+	if (type == SYMBOL)
+	{
+		if (O.type == SYMBOL)
 			return strval != O.strval;
 		throw "";
 	}
@@ -476,23 +488,17 @@ Object Object::operator % (const Object & O) const
 
 bool numberp (const Object & O)
 {
-	if (O.type == INT || O.type == REAL)
-		return true;
-	return false;
+	return O.type == INT || O.type == REAL;
 }
 
 bool symbolp (const Object & O)
 {
-	if (O.type == STRING)
-		return true;
-	return false;
+	return O.type == SYMBOL;
 }
 
 bool listp (const Object & O)
 {
-	if (O.type == LIST)
-		return true;
-	return false;
+	return O.type == LIST;
 }
 
 bool zerop (const Object & O)
@@ -516,23 +522,12 @@ bool zerop (const Object & O)
 
 bool nullp (const Object & O)
 {
-/*	if (O.type == INT && O.intval == 0)
-		return true;
-	if (O.type == REAL && O.realval == 0)
-		return true;
-	if (O.type == STRING && O.strval.size() == 0)
-		return true;
-*/
-	if (O.type == LIST && O.listval.size() == 0)
-		return true;
-	return false;
+	return O.type == LIST && O.listval.size() == 0;
 }
 
 bool stringp (const Object & O)
 {
-	//if (O.type == STRING)
-	//	return true;
-	return false;
+	return O.type == STRING;
 }
 
 Object listop (const string & S, const Object & O)
@@ -634,7 +629,7 @@ Object::Object (stringstream & ss)
 				astring = astring.substr (0, astring.size()-1);
 			}
 			if (astring.size() > 0)
-				temp = Object (astring);
+				temp = Object (astring, true);
 		}
 		if (temp.type != NONE)
 		{
@@ -664,6 +659,7 @@ void Object::MakeName ()
 			ss << realval;
 			break;
 		case STRING:
+	        case SYMBOL:
 			ss << strval;
 			break;
 		case LIST:

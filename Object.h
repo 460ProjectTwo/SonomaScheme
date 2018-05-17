@@ -8,7 +8,7 @@
 #include <vector>
 using namespace std;
 
-enum obj_type {NONE, INT, REAL, STRING, LIST};
+enum obj_type {NONE, INT, REAL, STRING, LIST, SYMBOL};
 
 class Object
 {
@@ -16,7 +16,7 @@ class Object
 	Object();
 	Object (const int & value);
 	Object (const double & value);
-	Object (const string & value);
+	Object (const string & value, bool symbol=false);
 	bool operator == (const Object & O) const;
 	bool operator != (const Object & O) const;
 	bool operator < (const Object & O) const;

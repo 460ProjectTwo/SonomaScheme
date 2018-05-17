@@ -51,7 +51,7 @@ class SyntacticalAnalyzer
     int Stmt_Pair();
     int Stmt_Pair_Body();
     int Action();
-    int Any_Other_Token();
+    int Any_Other_Token(bool objectify = true);
 
     void Using_Rule(rule);
     void Report_Missing(char const *);
