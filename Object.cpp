@@ -35,16 +35,18 @@ Object::Object (const string & value, bool symbol)
 	int sgn = 0, num = 0, dp = 0;
 	if (value.length() > 1 && (value[0] == '+' || value[0] == '-'))
 		sgn++;
-	for (int i = sgn; i < value.size(); i++)
+	for (int i = sgn; i < value.size(); i++) {
 		if (isdigit (value[i]))
 			num++;
 		else if (value[i] == '.')
 			dp++;
-	if (sgn + num + dp == value.size())
+	}
+	if (sgn + num + dp == value.size()) {
 		if (dp == 0)
 			*this = Object (atoi (value.c_str()));
 		else if (dp == 1)
 			*this = Object (atof (value.c_str()));
+	}
 	if (type != NONE)
 		return;
 	int i = 0;
@@ -481,7 +483,7 @@ Object Object::operator % (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for % operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -563,7 +565,7 @@ Object listop (const string & S, const Object & O)
 	else if (message[0] == 's')
 		cerr << " (" << O.listval.size() << ")";
 	else if (message[0] == 'i')
-	cerr << endl;
+		cerr << endl;
 	exit (1);
     }
 }
