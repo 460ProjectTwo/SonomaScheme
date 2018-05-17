@@ -671,13 +671,13 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
     //Rule for: <stmt_pair_body> -> <stmt> <stmt> RPAREN_T <stmt_pair>
     case 22:
         Using_Rule(r);
-	gen.WriteCode(1, "if (");
+        gen.WriteCode(1, "if (");
         errors += Stmt();
-	gen.WriteCode(1, ")\n");
-	gen.WriteCode(1, "{__result = ");
+        gen.WriteCode(1, ")\n");
+        gen.WriteCode(1, "{__result = ");
         errors += Stmt();
-	gen.WriteCode(0, ";}\n");
-	gen.WriteCode(1, "else");
+        gen.WriteCode(0, ";}\n");
+        gen.WriteCode(1, "else");
         if (token == RPAREN_T) {
             token = lex.GetToken();
         }
@@ -691,9 +691,9 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
     case 23:
         Using_Rule(r);
         token = lex.GetToken();
-	gen.WriteCode(0, "\n\t{__result = ");
+        gen.WriteCode(0, "\n\t{__result = ");
         errors += Stmt();
-	gen.WriteCode(0, ";}");
+        gen.WriteCode(0, ";}");
         if (token == RPAREN_T) {
             token = lex.GetToken();
         }
@@ -757,7 +757,7 @@ int SyntacticalAnalyzer::Action()
             Report_Missing("'('");
             ++errors;
         }
-	gen.WriteCode(0,"__result;\n");
+        gen.WriteCode(0,"__result;\n");
         errors += Stmt_Pair_Body();
         break;
     //Rule for: <action> -> LISTOP_T <stmt>
@@ -828,20 +828,52 @@ int SyntacticalAnalyzer::Action()
         break;
     //Rule for: <action> -> AND_T <stmt_list>
     case 28:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" && ");
+        break;
     //Rule for: <action> -> OR_T <stmt_list>
     case 29:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" || ");
+        break;
     //Rule for: <action> -> MULT_T <stmt_list>
     case 40:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" * ");
+        break;
     //Rule for: <action> -> EQUALTO_T <stmt_list>
     case 42:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" == ");
+        break;
     //Rule for: <action> -> GT_T <stmt_list>
     case 43:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" > ");
+        break;
     //Rule for: <action> -> LT_T <stmt_list>
     case 44:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" < ");
+        break;
     //Rule for: <action> -> GTE_T <stmt_list>
     case 45:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" >= ");
+        break;
     //Rule for: <action> -> LTE_T <stmt_list>
     case 46:
+        Using_Rule(r);
+        token = lex.GetToken();
+        errors += Stmt_List(" <= ");
+        break;
     //Rule for: <action> -> IDENT_T <stmt_list>
     case 47:
         Using_Rule(r);
