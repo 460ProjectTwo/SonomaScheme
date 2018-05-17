@@ -115,7 +115,7 @@ bool Object::operator == (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for == operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -164,7 +164,7 @@ bool Object::operator != (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for != operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -200,7 +200,7 @@ bool Object::operator < (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for < operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -236,7 +236,7 @@ bool Object::operator <= (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for <= operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -308,7 +308,7 @@ bool Object::operator >= (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for >= operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -361,7 +361,7 @@ Object Object::operator + (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for + operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -391,7 +391,7 @@ Object Object::operator - (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for - operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -421,7 +421,7 @@ Object Object::operator * (const Object & O) const
     catch (const char * message)
     {
 	cout /*cerr*/ << "Wrong types for * operator: " << name << " and " << O.name
-	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n"; 
+	     << " (" << nameof[type] << " and " << nameof[O.type] << ")\n";
 	exit (1);
     }
 }
@@ -474,28 +474,28 @@ Object Object::operator % (const Object & O) const
     }
 }
 
-bool numberp (const Object & O) 
+bool numberp (const Object & O)
 {
 	if (O.type == INT || O.type == REAL)
 		return true;
 	return false;
 }
 
-bool symbolp (const Object & O) 
+bool symbolp (const Object & O)
 {
 	if (O.type == STRING)
 		return true;
 	return false;
 }
 
-bool listp (const Object & O) 
+bool listp (const Object & O)
 {
 	if (O.type == LIST)
 		return true;
 	return false;
 }
 
-bool zerop (const Object & O) 
+bool zerop (const Object & O)
 {
     try
     {
@@ -514,7 +514,7 @@ bool zerop (const Object & O)
     }
 }
 
-bool nullp (const Object & O) 
+bool nullp (const Object & O)
 {
 /*	if (O.type == INT && O.intval == 0)
 		return true;
@@ -528,7 +528,7 @@ bool nullp (const Object & O)
 	return false;
 }
 
-bool stringp (const Object & O) 
+bool stringp (const Object & O)
 {
 	//if (O.type == STRING)
 	//	return true;
@@ -558,15 +558,15 @@ Object listop (const string & S, const Object & O)
 		return T;
 	}
 	cout << S << endl;
-	throw "name" + S;	
+	throw "name" + S;
     }
     catch (const char * message)
     {
 	cerr << "Wrong " << message << " for list operation function: " << O.name;
 	if (message[0] == 't')
-		cerr << " (" << nameof[O.type]<< ")"; 
+		cerr << " (" << nameof[O.type]<< ")";
 	else if (message[0] == 's')
-		cerr << " (" << O.listval.size() << ")"; 
+		cerr << " (" << O.listval.size() << ")";
 	else if (message[0] == 'i')
 	cerr << endl;
 	exit (1);
