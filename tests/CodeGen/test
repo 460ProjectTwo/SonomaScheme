@@ -1,0 +1,46 @@
+#! /usr/bin/env atf-sh
+
+TESTS_DIR=$(atf_get_srcdir)
+
+tests=""
+
+for path in ${TESTS_DIR}/*.ss
+do
+    base=${path%.ss}
+    file=${path#${TESTS_DIR}/}
+    name=$(echo ${file%.ss} | tr '-' '_')
+
+    atf_test_case ${name}
+    eval "${name}_head() {
+        atf_set descr ${file}
+        atf_set require.files ${path} ${base}.ok
+        atf_set require.progs P3.out
+    }
+    ${name}_body() {
+        P3.out ${path}
+        c++ -g -std=c++11 -I${TESTS_DIR}/../../ -c ${TESTS_DIR}/../../Object.cpp
+        c++ -g -std=c++11 -I${TESTS_DIR}/../../ -c ${base}.cpp \
+            || atf_fail 'generated code does not compile'
+        c++ -g -o test.exe ${file%.ss}.o Object.o \
+            || atf_fail 'generated code does not link'
+        ./test.exe > test.out \
+            || atf_fail 'compiled test program exited with error'
+        diff -u ${base}.ok test.out \
+            || atf_fail 'output did not match expected'
+    }
+    "
+
+    tests="${tests} ${name}"
+done
+
+atf_init_test_cases() {
+    for t in ${tests}
+    do
+        atf_add_test_case ${t}
+    done
+}
+
+# Local Variables:
+# mode: sh
+# End:
+# vim: filetype=sh fileformat=unix
