@@ -2,10 +2,28 @@
 
 TESTS_DIR=$(atf_get_srcdir)
 
-tests=""
+base_head() {
+    local path file
+    path=${1}
+    file=${2}
 
-for path in ${TESTS_DIR}/*.ss
-do
+    atf_set "descr" ${file}
+    atf_set "require.files" ${path}
+    atf_set "require.progs" P3.out
+}
+
+base_body() {
+    local path action
+    path=${1}
+    action=${2}
+
+    cp ${path} test.ss
+    atf_check -o ${action}:'^0 errors' P3.out test.ss
+}
+
+generate_test_case() {
+    local path file name action
+    path=${1}
     file=${path##${TESTS_DIR}/}
 
     case ${file} in
@@ -21,15 +39,19 @@ do
 
     atf_test_case ${name}
     eval "${name}_head() {
-        atf_set descr ${file}
-        atf_set require.files ${path}
-        atf_set require.progs P3.out
+        base_head ${path} ${file}
     }
     ${name}_body() {
-        atf_check -o ${action}:'^0 errors' P3.out ${path}
+        base_body ${path} ${action}
     }"
 
     tests="${tests} ${name}"
+}
+
+tests=""
+for path in ${TESTS_DIR}/*.ss
+do
+    generate_test_case ${path}
 done
 
 atf_init_test_cases() {
