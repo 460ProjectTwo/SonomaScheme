@@ -366,6 +366,7 @@ int SyntacticalAnalyzer::Stmt()
     case 7:
         Using_Rule(r);
         errors += Literal();
+	
         break;
     //Rule for: <stmt> -> IDENT_T
     case 8:
@@ -632,6 +633,8 @@ int SyntacticalAnalyzer::Stmt_Pair()
     //Rule for: <stmt_pair> -> lambda
     case 21:
         Using_Rule(r);
+	gen.WriteCode(0, "\n");
+	gen.WriteCode(1, "{__result = Object();}");
         break;
     case NoRule:
         Report_Missing("something else"); // TODO: expected what?
@@ -668,8 +671,13 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
     //Rule for: <stmt_pair_body> -> <stmt> <stmt> RPAREN_T <stmt_pair>
     case 22:
         Using_Rule(r);
+	gen.WriteCode(1, "if (");
         errors += Stmt();
+	gen.WriteCode(1, ")\n");
+	gen.WriteCode(1, "{__result = ");
         errors += Stmt();
+	gen.WriteCode(0, ";}\n");
+	gen.WriteCode(1, "else");
         if (token == RPAREN_T) {
             token = lex.GetToken();
         }
@@ -683,7 +691,9 @@ int SyntacticalAnalyzer::Stmt_Pair_Body()
     case 23:
         Using_Rule(r);
         token = lex.GetToken();
+	gen.WriteCode(0, "\n\t{__result = ");
         errors += Stmt();
+	gen.WriteCode(0, ";}");
         if (token == RPAREN_T) {
             token = lex.GetToken();
         }
@@ -747,6 +757,7 @@ int SyntacticalAnalyzer::Action()
             Report_Missing("'('");
             ++errors;
         }
+	gen.WriteCode(0,"__result;\n");
         errors += Stmt_Pair_Body();
         break;
     //Rule for: <action> -> LISTOP_T <stmt>
