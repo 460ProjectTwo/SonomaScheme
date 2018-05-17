@@ -18,6 +18,7 @@ do
     }
     ${name}_body() {
         P3.out ${path}
+        cat ${base}.cpp
         c++ -g -std=c++11 -I${TESTS_DIR}/../../ -c ${TESTS_DIR}/../../Object.cpp
         c++ -g -std=c++11 -I${TESTS_DIR}/../../ -c ${base}.cpp \
             || atf_fail 'generated code does not compile'
