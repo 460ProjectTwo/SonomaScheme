@@ -757,7 +757,7 @@ int SyntacticalAnalyzer::Action()
             Report_Missing("'('");
             ++errors;
         }
-        gen.WriteCode(0,"__result;\n");
+        gen.WriteCode(0,"Object();\n");
         errors += Stmt_Pair_Body();
         break;
     //Rule for: <action> -> LISTOP_T <stmt>
@@ -799,7 +799,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> DISPLAY_T <stmt>
     case 48:
         Using_Rule(r);
-        gen.WriteCode(0, "__result; cout << " );
+        gen.WriteCode(0, "Object(); cout << " );
         token = lex.GetToken();
         errors += Stmt();
         break;
@@ -926,7 +926,7 @@ int SyntacticalAnalyzer::Action()
     //Rule for: <action> -> NEWLINE_T
     case 49:
         Using_Rule(r);
-        gen.WriteCode(0, "__result; cout << endl" );
+        gen.WriteCode(0, "Object(); cout << endl" );
         token = lex.GetToken();
         break;
     case NoRule:
