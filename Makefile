@@ -22,8 +22,10 @@ clean :
 	rm -rf *.o P3.out *.gch
 
 test : P3.out
-	mypy tablegen.py
 	. ./_test-env && kyua test
+
+check-python :
+	mypy tablegen.py
 
 submit : test do-submit
 
@@ -34,4 +36,4 @@ do-submit : Project3.cpp LexicalAnalyzer.h LexicalAnalyzer.cpp SyntacticalAnalyz
 	tar cfvz TeamSP3.tgz TeamSP3
 	cp TeamSP3.tgz ~tiawatts/cs460drop
 
-.PHONY: clean test submit do-submit
+.PHONY: clean test check-python submit do-submit
