@@ -772,7 +772,9 @@ int SyntacticalAnalyzer::Action()
     case 30:
         Using_Rule(r);
         token = lex.GetToken();
+        gen.WriteCode(0, "(not (");
         errors += Stmt();
+        gen.WriteCode(0, "))");
         break;
     //Rule for: <action> -> NUMBERP_T <stmt>
     case 31:
