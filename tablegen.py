@@ -321,16 +321,16 @@ def array_initializer(l: list) -> str:
                  .replace('], ','},\n\t') \
                  .replace(']]','}\n};')
 
-def bitmask_initializer(l: list) -> str:
+def bitfield_initializer(l: list) -> str:
     """
     Given a nested list of values in {0,1}, returns a string containing a C++
-    array initializer for bitmasks corresponding to the inner lists.
+    array initializer for bitfields corresponding to the inner lists.
 
-    The bitmask values are unsigned long long, so the inner lists can have at
+    The bitfield values are unsigned long long, so the inner lists can have at
     most 64 values each.
 
     A bit can then be checked in C++ as follows:
-    if (masks[row] & (1ULL << col))
+    if (fields[row] & (1ULL << col))
         // Bit was set
         doSomething();
 
@@ -341,7 +341,7 @@ def bitmask_initializer(l: list) -> str:
     };"
     """
     l1 = [ hex(sum(bit << i for (i, bit) in enumerate(row))) + 'ULL'
-           for row in l]
+           for row in l ]
     return str(l1).replace('[','{\n\t')  \
                   .replace(', ',',\n\t') \
                   .replace(']','\n};')   \
@@ -362,7 +362,7 @@ def main():
                       for check in FollowsChecks ]
     with open('follows.hpp', 'w') as f:
         f.write('static uint64_t const follows[] = ')
-        f.write(bitmask_initializer(follows_rules))
+        f.write(bitfield_initializer(follows_rules))
 
 if __name__ == "__main__":
     main()
