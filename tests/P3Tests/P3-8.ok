@@ -1,0 +1,2 @@
+("HelloWorld" 1.01 1 'anything <= >= < > = * / - + string? modulo null? zero? list? symbol? number? define not or and cddr newline display if cons literal numeric indentifier)
+Wrong type for cons function parameter 2: b (string)

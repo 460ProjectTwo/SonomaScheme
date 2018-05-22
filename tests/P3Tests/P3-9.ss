@@ -1,0 +1,53 @@
+;; Project 3 Test 9
+
+(define (cond_ex_1 choice value)
+    (cond ((= choice 1) value)
+	  ((= choice 2) (* value value))
+	  ((= choice 3) (if (= value 0)
+				"Division by 0 not defined"
+				(/ 1 value)
+			))
+	  (else 0)
+    )
+)
+
+(define (square n)
+        (if (number? n)
+		(* n n)
+                'invalid_parameter
+        )
+)
+
+(define (reciprocal n)
+        (if (and (number? n) (not (= n 0)))
+                (/ 1 n)
+                'invalid_parameter
+        )
+)
+
+(define (cond_ex_2 choice value)
+    (cond ((= choice 1) value)
+	  ((= choice 2) (square value))
+	  ((= choice 3) (reciprocal value))
+	  (else 0)
+    )
+)
+
+(define (main)
+	(display (cond_ex_1 1 5.0)) (newline)
+	(display (cond_ex_1 1 -7.0)) (newline)
+	(display (cond_ex_1 2 5.0)) (newline)
+	(display (cond_ex_1 2 -7.0)) (newline)
+	(display (cond_ex_1 3 5.0)) (newline)
+	(display (cond_ex_1 3 -7.0)) (newline)
+	(display (cond_ex_1 3 0)) (newline)
+	(display (cond_ex_1 -1 5.0)) (newline)
+	(display (cond_ex_2 1 5.0)) (newline)
+	(display (cond_ex_2 1 -7.0)) (newline)
+	(display (cond_ex_2 2 5.0)) (newline)
+	(display (cond_ex_2 2 -7.0)) (newline)
+	(display (cond_ex_2 3 5.0)) (newline)
+	(display (cond_ex_2 3 -7.0)) (newline)
+	(display (cond_ex_2 3 0)) (newline)
+	(display (cond_ex_2 -1 5.0)) (newline)
+)

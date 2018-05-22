@@ -1,0 +1,14 @@
+;; Project 3 Test 3
+
+(define (listop_ex1)
+  (cons (car '(a b c)) (cdr '(d e f)))
+  )
+
+(define (listop_ex2)
+  (cons (cadr '(a b c)) (cddr '(d e f)))
+  )
+
+(define (main)
+  (display (listop_ex1)) (newline)
+  (display (listop_ex2)) (newline)
+  )

@@ -1,0 +1,23 @@
+-6.6871
+0.293519
+1.36735
+-2520
+3
+5
+5
+470
+625
+2
+(a e f)
+(b f)
+("HelloWorld" 1.01 1 'anything <= >= < > = * / - + string? modulo null? zero? list? symbol? number? define not or and cddr newline display if cons literal numeric indentifier)
+Is zero
+Is a number
+Is a symbol
+Is a list
+Is null
+Is a symbol
+in_ascending_order
+5
+5
+Wrong type for cons function parameter 2: b (string)
