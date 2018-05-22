@@ -19,9 +19,7 @@ This will generate several output files, including `foo.cpp`.
 
 To compile and run an executable from the generated C++ code:
 ```
-c++ -g -std=c++11 -c Object.cpp
-c++ -g -std=c++11 -c foo.cpp
-c++ -g -o foo Object.o foo.o
+c++ -g -std=c++11 -o foo Object.cpp foo.cpp
 ./foo
 ```
 
