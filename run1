@@ -1,8 +1,0 @@
-clear
-echo "Using" $1".ss as input to guile"
-guile < $1.ss
-echo
-echo "Using" $1".ss as input to P2tw.out"
-./P2tw.out $1.ss
-cat $1.lst
-echo
